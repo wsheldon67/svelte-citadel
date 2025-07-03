@@ -1,0 +1,23 @@
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app"
+import { getAuth } from "firebase/auth"
+import { getFirestore } from "firebase/firestore"
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyCsJgf892X_K5tICRwZ0KiI9CLHz3aKWvA",
+  authDomain: "citadel-bc67c.firebaseapp.com",
+  projectId: "citadel-bc67c",
+  storageBucket: "citadel-bc67c.firebasestorage.app",
+  messagingSenderId: "601181094277",
+  appId: "1:601181094277:web:77b2f74b023a4962efc4ec",
+  measurementId: "G-EYG8THPKJ9"
+}
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig)
+export const db = getFirestore(app)
+export const auth = getAuth(app)
