@@ -1,6 +1,8 @@
 <script lang="ts">
   import { auth } from "$lib/firebase"
   import { signInAnonymously } from "firebase/auth"
+
+  let { children } = $props()
   
   if (!auth.currentUser) {
     signInAnonymously(auth)
@@ -14,3 +16,4 @@
       })
   }
 </script>
+{@render children()}
