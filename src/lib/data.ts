@@ -11,6 +11,7 @@ export type EntityListData = {
 
 export type PlayerData = {
   name: string,
+  id: string,
   personal_stash: EntityListData,
 }
 
