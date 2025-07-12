@@ -1,5 +1,6 @@
 import { type PlayerData } from "./data";
-
+import type { Entity } from "./entity.svelte";
+import { get_entity } from "./pieces";
 
 export type PlayerConfig = {
   name: string;
@@ -10,9 +11,13 @@ export type PlayerConfig = {
 
 export class Player {
   data:PlayerData
+  personal_stash: Entity[];
 
   constructor (data:PlayerData) {
     this.data = data
+    this.personal_stash = $derived(
+      this.data.personal_stash.entities.map(entityData => get_entity(entityData))
+    )
   }
 
   static from_config(config: PlayerConfig): Player {
