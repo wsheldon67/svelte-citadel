@@ -13,12 +13,16 @@ export class Board {
     return tiles
   })
 
-  extents: { x: number, y: number } = $derived.by(() => {
+  extents: {
+    x_min: number, x_max: number, y_min: number, y_max: number
+  } = $derived.by(() => {
     const keys = Object.keys(this.data.tiles) as CoordinateData[]
     const coordinates = keys.map(coordinate => coordinate.split(',').map(Number))
-    const maxX = Math.max(...coordinates.map(coord => coord[0]), 0)
-    const maxY = Math.max(...coordinates.map(coord => coord[1]), 0)
-    return { x: maxX + 1, y: maxY + 1 }
+    const x_max = Math.max(...coordinates.map(coord => coord[0]), 0)
+    const y_max = Math.max(...coordinates.map(coord => coord[1]), 0)
+    const x_min = Math.min(...coordinates.map(coord => coord[0]), 0)
+    const y_min = Math.min(...coordinates.map(coord => coord[1]), 0)
+    return { x_min, x_max, y_min, y_max }
   })
 
   constructor(data: BoardData) {

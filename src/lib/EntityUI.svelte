@@ -5,13 +5,13 @@
 
   const { entity }: { entity: Entity } = $props();
 
-  async function get_image():Promise<string> {
+  async function get_image(entity: Entity):Promise<string> {
     const image_ref = ref(storage, `builtin/default/${entity.img_path}`)
     const url = await getDownloadURL(image_ref)
     return url
   }
 </script>
-{#await get_image() then url }
+{#await get_image(entity) then url }
   <img src={url} alt={entity.data.kind} class="entity-image" />
 {:catch error}
   <p>Error loading image: {error.message}</p>

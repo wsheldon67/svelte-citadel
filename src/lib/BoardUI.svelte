@@ -1,17 +1,50 @@
 <script lang="ts">
   import { Board } from '$lib/board.svelte';
+    import TileUi from './TileUI.svelte';
+    import { iter_range } from './util';
+    import type { CoordinateData } from './data';
+    import { create_water_tile, Tile } from './tile.svelte';
 
-  const { board }: { board: Board } = $props();
+  const {
+    board,
+    margin = 1
+  }: {
+    board: Board,
+    margin?: number
+  } = $props();
+
+
+  function get_tile(x: number, y: number): Tile {
+    const coordinate_data:CoordinateData = `${x},${y}`
+    if (coordinate_data in board.tiles) {
+      return board.tiles[coordinate_data]
+    } else {
+      return create_water_tile(coordinate_data)
+    }
+  }
 
 </script>
 {JSON.stringify(board.data, null, 2)}
 
-{#each Array.from({ length: board.extents.y + 3}) as _, y}
-  <div class="row">
-    {#each Array.from({ length: board.extents.x + 3}) as _, x}
-      <div class="tile">
-        {board.tiles[`${x},${y}`]?.data?.name || 'Empty'}
-      </div>
-    {/each}
-  </div>
-{/each}
+<div class="board">
+  {#each iter_range(board.extents.y_min - margin, board.extents.y_max + margin) as y}
+    <div class="row">
+      {#each iter_range(board.extents.x_min - margin, board.extents.x_max + margin) as x}
+        <TileUi tile={get_tile(x, y)} />
+      {/each}
+    </div>
+  {/each}
+</div>
+
+<style>
+  .row {
+    display: flex;
+    flex-direction: row;
+    gap: 0.25rem;
+  }
+  .board {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+</style>
