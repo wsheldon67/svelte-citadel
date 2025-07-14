@@ -21,41 +21,51 @@ export const blank_config: GameConfig = {
   citadels_per_player: 1,
 };
 
+const blank_game_data: GameData = {
+  players: {},
+  board: { name: "Main", tiles: {} },
+  turn: 1,
+  community_pool: { name: "Community Pool", entities: [] },
+  graveyard: { name: "Graveyard", entities: [] },
+  ...blank_config,
+};
+
 export class Game {
-  public data: GameData
-  public players: Player[]
-  public current_user: User | null
-  public me: Player | null
-  public board: Board
+  public data: GameData = $state(blank_game_data)
   public game_code: string | null = null
 
-  constructor(data: GameData) {
-    this.data = $state(data);
-    this.players = $derived(
+
+  private current_user: User | null = $state(null)
+
+
+  public players: Player[] = $derived(
       Object.values(this.data.players).map(playerData => new Player(playerData))
     )
-    this.current_user = $state(null)
-    this.me = $derived(
+
+  public me: Player | null  = $derived(
       this.current_user && this.players ? this.players.find(player => player.data.id === this.current_user?.uid) || null : null
     )
-    this.board = $derived(new Board(this.data.board))
 
+  public board: Board = $derived(new Board(this.data.board))
+
+  public current_player: Player = $derived(
+      this.players[this.data.turn % this.players.length]
+  )
+
+
+  constructor(data: GameData) {
+    this.data = data
     onAuthStateChanged(auth, user => this.current_user = user)
     // @ts-ignore
-    window.game = this; // For debugging purposes
+    window.game = this // For debugging purposes
   }
 
+
   static fromConfig(config: GameConfig): Game {
-    const initial_data: GameData = {
-      ...config,
-      players: {},
-      board: { name: "Main", tiles: {} },
-      turn: 0,
-      community_pool: { name: "Community Pool", entities: [] },
-      graveyard: { name: "Graveyard", entities: [] },
-    };
+    const initial_data: GameData = {...blank_game_data, ...config}
     return new Game(initial_data)
   }
+
 
   subscribe(game_code: string):Unsubscribe {
     console.log("Subscribing to game:", game_code)
@@ -70,6 +80,7 @@ export class Game {
       }
     })
   }
+
 
   place_entity(entity: Entity, tile: Tile): void {
     if (!this.me) throw new Error("No player is currently signed in")

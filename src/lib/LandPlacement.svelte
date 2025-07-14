@@ -16,12 +16,15 @@
 
 </script>
 
+{#if game.current_player}
+  <p>It is {game.current_player?.data?.name}'s turn.</p>
+{/if}
+
 {#if game.me}
 <PlayerUI player={game.me} bind:selected_personal_stash />
 {:else}
-<p>No signed in player.</p>
+<p>Signed in player is not in this game.</p>
 {/if}
 
-{#if game.board}
+
 <BoardUI board={game.board} on_click={on_board_click} />
-{/if}
