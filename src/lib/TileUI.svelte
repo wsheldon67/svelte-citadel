@@ -4,25 +4,33 @@
   import { iter_enum_values } from "./util";
   import EntityUi from "./EntityUI.svelte";
   
-  const { tile }: { tile: Tile } = $props()
-  $inspect(tile.coordinate_data)
+  const {
+    tile,
+    on_click = () => {},
+  }: {
+    tile: Tile,
+    on_click?: () => void,
+  } = $props()
+
 </script>
-<div class='tile'>
+<button class='tile' onclick={on_click}>
   {#each iter_enum_values(Layer) as layer}
     {#if tile.has_entity_at_layer(layer)}
       <EntityUi entity={tile.get_entity_at_layer(layer)!} />
     {/if}
   {/each}
   <div class='coordinate_label'>{tile.coordinate_data}</div>
-</div>
+</button>
 
 <style>
   .tile {
     position: relative;
     width: 3rem;
     height: 3rem;
+    border: none;
+    background-color: transparent;
   }
-  .tile > :global(img) {
+  .tile > :global(button) {
     position: absolute;
     top: 0;
     left: 0;

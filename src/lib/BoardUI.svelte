@@ -1,16 +1,19 @@
 <script lang="ts">
   import { Board } from '$lib/board.svelte';
-    import TileUi from './TileUI.svelte';
-    import { iter_range } from './util';
-    import type { CoordinateData } from './data';
-    import { create_water_tile, Tile } from './tile.svelte';
+  import TileUi from './TileUI.svelte';
+  import { iter_range } from './util';
+  import type { CoordinateData } from './data';
+  import { create_water_tile, Tile } from './tile.svelte';
+    import ObjectViewer from './ObjectViewer.svelte';
 
   const {
     board,
-    margin = 1
+    margin = 1,
+    on_click = () => {},
   }: {
     board: Board,
-    margin?: number
+    margin?: number,
+    on_click?: (tile: Tile) => void,
   } = $props();
 
 
@@ -24,13 +27,16 @@
   }
 
 </script>
-{JSON.stringify(board.data, null, 2)}
+<ObjectViewer object={board.data} />
 
 <div class="board">
   {#each iter_range(board.extents.y_min - margin, board.extents.y_max + margin) as y}
     <div class="row">
       {#each iter_range(board.extents.x_min - margin, board.extents.x_max + margin) as x}
-        <TileUi tile={get_tile(x, y)} />
+        <TileUi
+          tile={get_tile(x, y)}
+          on_click={() => on_click(get_tile(x, y))}
+        />
       {/each}
     </div>
   {/each}

@@ -3,7 +3,7 @@
   import { db, auth } from '$lib/firebase'
   import { Game, type GameConfig } from '$lib/game.svelte'
   import { doc, setDoc } from 'firebase/firestore';
-  import { generateCode } from '$lib/util';
+  import { generate_code } from '$lib/util';
     import { Player } from '$lib/player.svelte';
 
   let gameCode = $state('')
@@ -28,14 +28,14 @@
 
     const game = Game.fromConfig(gameConfig)
 
-    game.data.players.push(Player.from_config({
+    game.data.players[auth.currentUser.uid] = Player.from_config({
       name: auth.currentUser.displayName || 'Anonymous',
       id: auth.currentUser.uid,
       lands_per_player: gameConfig.lands_per_player,
       citadels_per_player: gameConfig.citadels_per_player,
-    }).data)
+    }).data
 
-    gameCode = generateCode()
+    gameCode = generate_code()
     console.log($state.snapshot(game.data))
     await setDoc(doc(db, 'games', gameCode), game.data)
     goto(`/${gameCode}`)

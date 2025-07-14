@@ -1,25 +1,45 @@
 <script lang='ts'>
-  import { storage } from './firebase';
   import { Entity } from '$lib/entity.svelte';
-  import { ref, getDownloadURL } from 'firebase/storage';
+    import { get_img_url } from './util';
 
-  const { entity }: { entity: Entity } = $props();
+  const {
+    entity,
+    on_click = () => {},
+    selected = false,
+  }: {
+    entity: Entity
+    on_click?: () => void,
+    selected?: boolean
+  } = $props();
 
   async function get_image(entity: Entity):Promise<string> {
-    const image_ref = ref(storage, `builtin/default/${entity.img_path}`)
-    const url = await getDownloadURL(image_ref)
+    const url = await get_img_url(`builtin/default/${entity.img_path}`)
     return url
   }
 </script>
 {#await get_image(entity) then url }
-  <img src={url} alt={entity.data.kind} class="entity-image" />
+  <button
+    style="background-image: url({url})"
+    onclick={on_click}
+    class:selected={selected}
+    style:z-index={entity.layer}
+  >{entity.data.kind}</button>
 {:catch error}
-  <p>Error loading image: {error.message}</p>
+  <button>Error loading image: {error.message}</button>
 {/await}
 
 <style>
-  img {
+  button {
     width: 3rem;
     height: 3rem;
+    color: transparent;
+    text-shadow: none;
+    border: none;
+    background-size: cover;
+    background-position: center;
+    background-color: transparent;
+  }
+  button.selected {
+    border: 2px solid blue;
   }
 </style>

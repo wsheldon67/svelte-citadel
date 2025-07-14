@@ -2,6 +2,7 @@
 export type EntityData = {
   kind: string,
   created_by: string,
+  id: string,
 }
 
 export type EntityListData = {
@@ -28,7 +29,7 @@ export type GameData = {
   personal_pieces_per_player: number,
   community_pieces_per_player: number,
   citadels_per_player: number,
-  players: PlayerData[],
+  players: {[id: string]: PlayerData},
   board: BoardData,
   turn: number,
   community_pool: EntityListData,

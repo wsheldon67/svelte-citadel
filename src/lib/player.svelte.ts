@@ -1,6 +1,7 @@
 import { type PlayerData } from "./data";
 import type { Entity } from "./entity.svelte";
 import { get_entity } from "./pieces";
+import { generate_code } from "./util";
 
 export type PlayerConfig = {
   name: string;
@@ -23,11 +24,11 @@ export class Player {
   static from_config(config: PlayerConfig): Player {
 
   const lands = Array.from({ length: config.lands_per_player }).map(() => {
-    return { kind: "Land", created_by: config.id }
+    return { kind: "Land", created_by: config.id, id: generate_code() }
   })
 
   const citadels = Array.from({ length: config.citadels_per_player }).map(() => {
-    return { kind: "Citadel", created_by: config.id }
+    return { kind: "Citadel", created_by: config.id, id: generate_code() }
   })
 
     const initial_data: PlayerData = {

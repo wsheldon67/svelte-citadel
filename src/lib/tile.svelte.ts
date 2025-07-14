@@ -2,6 +2,7 @@ import { Coordinate } from "./coordinate.svelte";
 import type { CoordinateData, EntityListData } from "./data";
 import { Layer, type Entity } from "./entity.svelte";
 import { EntityList } from "./entity_list.svelte";
+import { generate_code } from "./util";
 
 
 export class Tile extends EntityList {
@@ -47,7 +48,7 @@ export function create_water_tile(coordinate_data: CoordinateData): Tile {
   return new Tile({
     name: coordinate_data,
     entities: [
-      { kind: 'Water', created_by: 'game'}
+      { kind: 'Water', created_by: 'game', id: generate_code()}
     ],
   }, coordinate_data)
 }
