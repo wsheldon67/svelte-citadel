@@ -1,13 +1,14 @@
 <script lang="ts">
-  import { Board } from '$lib/board.svelte';
-  import TileUi from './TileUI.svelte';
-  import { iter_range } from './util';
-  import { Tile } from './tile.svelte';
-  import ObjectViewer from './ObjectViewer.svelte';
+  import { Board } from '$lib/board.svelte'
+  import TileUi from './TileUI.svelte'
+  import { iter_range } from './util'
+  import { Tile } from './tile.svelte'
+  import ObjectViewer from './ObjectViewer.svelte'
+  import { debug } from './util.svelte'
 
   const {
     board,
-    margin = 1,
+    margin = 2,
     on_click = () => {},
   }: {
     board: Board,
@@ -17,7 +18,9 @@
 
 
 </script>
-<ObjectViewer object={board.data} />
+{#if debug()}
+<ObjectViewer object={board.data} name="Board Data" />
+{/if}
 
 <div class="board">
   {#each iter_range(board.extents.y_min - margin, board.extents.y_max + margin) as y}
@@ -36,11 +39,11 @@
   .row {
     display: flex;
     flex-direction: row;
-    gap: 0.25rem;
+    gap: 0.1rem;
   }
   .board {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.1rem;
   }
 </style>

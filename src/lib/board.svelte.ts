@@ -1,8 +1,8 @@
-import type { BoardData, CoordinateData } from "./data";
-import type { Layer } from "./entity.svelte";
-import { EntityList } from "./entity_list.svelte";
-import type { Game } from "./game.svelte";
-import { create_water_tile, Tile } from "./tile.svelte";
+import type { BoardData, CoordinateData } from "./data"
+import type { Layer } from "./entity.svelte"
+import { EntityList } from "./entity_list.svelte"
+import type { Game } from "./game.svelte"
+import { create_water_tile, Tile } from "./tile.svelte"
 
 export class Board {
   data: BoardData = $state({name: 'not initialized', tiles: {}})

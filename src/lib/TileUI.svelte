@@ -3,6 +3,7 @@
   import { Layer } from "./entity.svelte";
   import { iter_enum_values } from "./util";
   import EntityUi from "./EntityUI.svelte";
+    import { debug } from "./util.svelte";
   
   const {
     tile,
@@ -19,7 +20,9 @@
       <EntityUi entity={tile.get_entity_at_layer(layer)!} />
     {/if}
   {/each}
-  <div class='coordinate_label'>{tile.coordinate_data}</div>
+  {#if debug()}
+    <div class='coordinate_label'>{tile.coordinate_data}</div>
+  {/if}
 </button>
 
 <style>

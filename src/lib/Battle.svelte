@@ -5,4 +5,3 @@
   const { game }: { game: Game } = $props();
 
 </script>
-<ObjectViewer object={game.data} />

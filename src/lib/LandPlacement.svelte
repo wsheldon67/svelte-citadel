@@ -4,7 +4,7 @@
   import BoardUI from './BoardUI.svelte'
   import type { Entity } from './entity.svelte'
   import type { Tile } from './tile.svelte'
-    import { RuleViolation } from './errors';
+  import { RuleViolation } from './errors'
 
   const { game }: { game: Game } = $props()
 
@@ -16,6 +16,7 @@
     if (!selected_personal_stash) return
     try {
       selected_personal_stash.do_action('place', tile)
+      error_message = ''
     } catch (error) {
       if (error instanceof RuleViolation) error_message = error.message
       else throw error
