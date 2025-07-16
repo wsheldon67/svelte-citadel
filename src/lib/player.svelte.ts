@@ -1,5 +1,6 @@
 import { type PlayerData } from "./data";
 import type { Entity } from "./entity.svelte";
+import type { Game } from "./game.svelte";
 import { get_entity } from "./pieces";
 import { generate_code } from "./util";
 
@@ -11,13 +12,13 @@ export type PlayerConfig = {
 }
 
 export class Player {
-  data:PlayerData
-  personal_stash: Entity[];
+  personal_stash: Entity[]
 
-  constructor (data:PlayerData) {
+  constructor (public data:PlayerData, public game: Game | null = null) {
     this.data = data
+    this.game = game
     this.personal_stash = $derived(
-      this.data.personal_stash.entities.map(entityData => get_entity(entityData))
+      this.data.personal_stash.entities.map(entityData => get_entity(entityData, this.game))
     )
   }
 

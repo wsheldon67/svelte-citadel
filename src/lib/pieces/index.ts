@@ -1,13 +1,15 @@
 import type { EntityData } from '$lib/data'
-import { Entity, Layer } from '$lib/entity.svelte'
+import { Entity, Layer, Place } from '$lib/entity.svelte'
+import { RuleViolation } from '$lib/errors'
+import type { Game } from '$lib/game.svelte'
 import type { Tile } from '../tile.svelte'
 
-export function get_entity(entityData: EntityData): Entity {
+export function get_entity(entityData: EntityData, game: Game|null=null): Entity {
   switch (entityData.kind) {
     case "Land":
-      return new Land(entityData)
+      return new Land(entityData, game)
     case "Citadel":
-      return new Citadel(entityData)
+      return new Citadel(entityData, game)
     case "Water":
       return new Water(entityData)
     default:
@@ -16,17 +18,30 @@ export function get_entity(entityData: EntityData): Entity {
 }
 
 export class Land extends Entity {
-  constructor(data: EntityData) {
-    super(data)
+  constructor(data: EntityData, game: Game | null = null) {
+    super(data, game)
     this.img_path = 'shared/Land.png'
-    this.layer = 0
+    this.layer = Layer.LAND
   }
+
+  actions = [
+    class PlaceLand extends Place {
+      check(target: Tile) {
+        super.check(target)
+        const number_of_lands = target.game!.board.get_entities_at_layer(Layer.LAND).length
+        const has_adjacent_land = target.adjacent_tiles.has_entity_at_layer(Layer.LAND)
+        if (number_of_lands > 0 && !has_adjacent_land) {
+          throw new RuleViolation(`Land can only be placed on a tile adjacent to another land tile.`)
+        }
+      }
+    }
+  ]
 
 }
 
 export class Citadel extends Entity {
-  constructor(data: EntityData) {
-    super(data)
+  constructor(data: EntityData, game: Game | null = null) {
+    super(data, game)
     this.img_path = 'shared/Citadel.png'
   }
 }
@@ -35,7 +50,7 @@ export class Water extends Entity {
   constructor(data: EntityData) {
     super(data)
     this.img_path = 'shared/Water.png'
-    this.layer = 0
+    this.layer = Layer.WATER
   }
 }
 
@@ -92,7 +107,7 @@ class Builder extends Piece {
   }
 
   move_selected_land(target:Tile) {
-    this.selected_land!.get_entity_at_layer(0)!.move_to(target)
+    this.selected_land!.get_entity_at_layer(0) // FIXME move_to
     this.selected_land = null
   }
 }

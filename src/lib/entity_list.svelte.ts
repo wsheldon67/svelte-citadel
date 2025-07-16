@@ -1,5 +1,6 @@
 import type { EntityListData } from "./data";
 import { Entity } from "./entity.svelte";
+import type { Game } from "./game.svelte";
 import { get_entity } from "./pieces";
 
 export class EntityList {
@@ -8,8 +9,13 @@ export class EntityList {
     return this.data.entities.map(entity_data => get_entity(entity_data))
   })
 
-  constructor(data: EntityListData) {
+  constructor(data:EntityListData, public game:Game|null=null) {
     this.data = data
+    this.game = game
+  }
+
+  get length(): number {
+    return this.entities.length
   }
 
 }

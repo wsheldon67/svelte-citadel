@@ -2,9 +2,8 @@
   import { Board } from '$lib/board.svelte';
   import TileUi from './TileUI.svelte';
   import { iter_range } from './util';
-  import type { CoordinateData } from './data';
-  import { create_water_tile, Tile } from './tile.svelte';
-    import ObjectViewer from './ObjectViewer.svelte';
+  import { Tile } from './tile.svelte';
+  import ObjectViewer from './ObjectViewer.svelte';
 
   const {
     board,
@@ -17,15 +16,6 @@
   } = $props();
 
 
-  function get_tile(x: number, y: number): Tile {
-    const coordinate_data:CoordinateData = `${x},${y}`
-    if (coordinate_data in board.tiles) {
-      return board.tiles[coordinate_data]
-    } else {
-      return create_water_tile(coordinate_data)
-    }
-  }
-
 </script>
 <ObjectViewer object={board.data} />
 
@@ -34,8 +24,8 @@
     <div class="row">
       {#each iter_range(board.extents.x_min - margin, board.extents.x_max + margin) as x}
         <TileUi
-          tile={get_tile(x, y)}
-          on_click={() => on_click(get_tile(x, y))}
+          tile={board.get_tile_at(x, y)}
+          on_click={() => on_click(board.get_tile_at(x, y))}
         />
       {/each}
     </div>

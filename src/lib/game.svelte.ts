@@ -6,6 +6,7 @@ import { Board } from './board.svelte';
 import { onAuthStateChanged, type User } from "firebase/auth";
 import type { Entity } from "./entity.svelte";
 import type { Tile } from "./tile.svelte";
+import { AuthenticationError, GameError } from "./errors";
 
 export type GameConfig = {
   lands_per_player: number;
@@ -39,14 +40,14 @@ export class Game {
 
 
   public players: Player[] = $derived(
-      Object.values(this.data.players).map(playerData => new Player(playerData))
+      Object.values(this.data.players).map(playerData => new Player(playerData, this))
     )
 
   public me: Player | null  = $derived(
       this.current_user && this.players ? this.players.find(player => player.data.id === this.current_user?.uid) || null : null
     )
 
-  public board: Board = $derived(new Board(this.data.board))
+  public board: Board = $derived(new Board(this.data.board, this))
 
   public current_player: Player = $derived(
       this.players[this.data.turn % this.players.length]
@@ -83,13 +84,17 @@ export class Game {
 
 
   place_entity(entity: Entity, tile: Tile): void {
-    if (!this.me) throw new Error("No player is currently signed in")
-    if (!this.game_code) throw new Error("Game code is not set")
+    if (!this.me) throw new AuthenticationError("No player is currently signed in")
+    if (!this.game_code) throw new GameError("Game code is not set")
 
     // Check if the entity is in the player's personal stash
     const personal_stash = this.me.personal_stash
     if (!personal_stash || !personal_stash.includes(entity)) {
-      throw new Error(`Entity ${entity.data.kind} is not in the personal stash of player ${this.me.data.name}`)
+      throw new GameError(`Entity ${entity.data.kind} is not in the personal stash of player ${this.me.data.name}`)
+    }
+
+    if (this.me !== this.current_player) {
+      throw new GameError(`It is not ${this.me.data.name}'s turn to place an entity.`)
     }
 
     updateDoc(doc(db, "games", this.game_code!), {

@@ -4,6 +4,9 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [sveltekit(), devtoolsJson()],
+  build: {
+    sourcemap: true
+  },
 	test: {
 		projects: [
 			{

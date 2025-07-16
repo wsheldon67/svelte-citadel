@@ -1,17 +1,22 @@
 import type { BoardData, CoordinateData } from "./data";
-import { Tile } from "./tile.svelte";
+import type { Layer } from "./entity.svelte";
+import { EntityList } from "./entity_list.svelte";
+import type { Game } from "./game.svelte";
+import { create_water_tile, Tile } from "./tile.svelte";
 
 export class Board {
   data: BoardData = $state({name: 'not initialized', tiles: {}})
 
-  tiles: {[coordinate: CoordinateData]: Tile} = $derived.by(() => {
-    const tiles: {[coordinate: CoordinateData]: Tile} = {}
-    const keys = Object.keys(this.data.tiles) as CoordinateData[]
-    keys.forEach(coordinate_data => {
-      tiles[coordinate_data] = new Tile(this.data.tiles[coordinate_data], coordinate_data)
+  constructor(data:BoardData, public game:Game|null=null) {
+    this.data = data
+    this.game = game
+  }
+
+  tiles: Tile[] = $derived(
+    Object.entries(this.data.tiles).map(([coordinate_data, tile_data]) => {
+      return new Tile(tile_data, coordinate_data as CoordinateData, this.game)
     })
-    return tiles
-  })
+  )
 
   extents: {
     x_min: number, x_max: number, y_min: number, y_max: number
@@ -25,7 +30,21 @@ export class Board {
     return { x_min, x_max, y_min, y_max }
   })
 
-  constructor(data: BoardData) {
-    this.data = data
+
+
+  has_entity_at_layer(layer: Layer): boolean {
+    return this.tiles.some(tile => tile.has_entity_at_layer(layer))
+  }
+
+  get_tile_at(x: number|CoordinateData, y: number|null=null): Tile {
+    const coordinate = typeof x === "string" ? x : `${x},${y}` as CoordinateData
+    return this.data.tiles[coordinate] ? new Tile(this.data.tiles[coordinate], coordinate, this.game) : create_water_tile(coordinate, this.game)
+  }
+
+  get_entities_at_layer(layer: Layer): EntityList {
+    const entities = this.tiles
+      .map(tile => tile.get_entity_at_layer(layer)?.data)
+      .filter(entity => entity !== undefined)
+    return new EntityList({entities, name: `Entities at layer ${layer}`}, this.game)
   }
 }
