@@ -28,7 +28,7 @@ export class Land extends Entity {
     class PlaceLand extends Place {
       check(target: Tile) {
         super.check(target)
-        const number_of_lands = target.game!.board.get_entities_at_layer(Layer.LAND).length
+        const number_of_lands = this.game!.board.get_entities_at_layer(Layer.LAND).length
         const has_adjacent_land = target.adjacent_tiles.has_entity_at_layer(Layer.LAND)
         if (number_of_lands > 0 && !has_adjacent_land) {
           throw new RuleViolation(`Land can only be placed on a tile adjacent to another land tile.`)

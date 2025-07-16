@@ -9,7 +9,7 @@
       "webRoot": "${workspaceFolder}",
       "preLaunchTask": "npm: dev",
       "sourceMaps": true,
-      "userDataDir": false,
+      // "userDataDir": false,
       "runtimeArgs": ["--remote-debugging-port=9222"],
       "breakOnLoad": true,
       "timeout": 30000

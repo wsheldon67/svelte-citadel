@@ -1,4 +1,4 @@
-import { arrayRemove, arrayUnion, doc, updateDoc } from "firebase/firestore";
+import { arrayRemove, arrayUnion, doc, increment, updateDoc } from "firebase/firestore";
 import type { EntityData } from "./data";
 import { GameError, RuleViolation } from "./errors";
 import type { Game } from "./game.svelte";
@@ -83,6 +83,7 @@ export class Place extends Action {
       updateDoc(doc(db, 'games', this.game!.game_code!), {
         [`board.tiles.${target.coordinate_data}.entities`]: arrayUnion(this.entity.data),
         [`players.${this.game!.me!.data.id}.personal_stash.entities`]: arrayRemove(this.entity.data),
+        'turn': increment(1)
       })
     }
 }
