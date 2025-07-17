@@ -22,24 +22,4 @@ export class Player {
     )
   }
 
-  static from_config(config: PlayerConfig): Player {
-
-  const lands = Array.from({ length: config.lands_per_player }).map(() => {
-    return { kind: "Land", created_by: config.id, id: generate_code() }
-  })
-
-  const citadels = Array.from({ length: config.citadels_per_player }).map(() => {
-    return { kind: "Citadel", created_by: config.id, id: generate_code() }
-  })
-
-    const initial_data: PlayerData = {
-      name: config.name,
-      id: config.id,
-      personal_stash: {
-        name: "Personal Stash",
-        entities: [...lands, ...citadels]
-      }
-    }
-    return new Player(initial_data)
-  }
 }

@@ -37,3 +37,18 @@ export async function get_img_url(path:string):Promise<string> {
   }
   return img_url_cache.get(path)!;
 }
+
+export function title_case(str: string): string {
+  return str
+    .split(' ')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
+export function sentence_case(str: string): string {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+export function rand_between(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}

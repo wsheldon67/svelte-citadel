@@ -1,4 +1,4 @@
-import type { GameData } from "./data";
+import { GamePhase, type GameData, type PlayerData } from "./data";
 import { arrayRemove, arrayUnion, doc, onSnapshot, updateDoc, writeBatch, type Unsubscribe } from "firebase/firestore";
 import { db, auth } from "./firebase";
 import { Player } from './player.svelte'
@@ -7,6 +7,7 @@ import { onAuthStateChanged, type User } from "firebase/auth";
 import type { Entity } from "./entity.svelte";
 import type { Tile } from "./tile.svelte";
 import { AuthenticationError, GameError } from "./errors";
+import { generate_code } from "./util";
 
 export type GameConfig = {
   lands_per_player: number;
@@ -28,19 +29,22 @@ const blank_game_data: GameData = {
   turn: 1,
   community_pool: { name: "Community Pool", entities: [] },
   graveyard: { name: "Graveyard", entities: [] },
+  phase: GamePhase.LOBBY,
   ...blank_config,
 };
 
 export class Game {
   public data: GameData = $state(blank_game_data)
-  public game_code: string | null = null
+  public game_code: string | null = $state(null)
 
 
   private current_user: User | null = $state(null)
 
 
   public players: Player[] = $derived(
-      Object.values(this.data.players).map(playerData => new Player(playerData, this))
+      Object.values(this.data.players)
+        .map(playerData => new Player(playerData, this))
+        .sort((a, b) => a.data.player_order - b.data.player_order)
     )
 
   public me: Player | null  = $derived(
@@ -101,6 +105,27 @@ export class Game {
       [`board.tiles.${tile.coordinate_data}.entities`]: arrayUnion(entity.data),
       [`players.${this.me.data.id}.personal_stash.entities`]: arrayRemove(entity.data),
     })
+  }
+
+  create_player_data(name: string, id: string): PlayerData {
+
+    const lands = Array.from({ length: this.data.lands_per_player }).map(() => {
+      return { kind: "Land", created_by: id, id: generate_code() }
+    })
+
+    const citadels = Array.from({ length: this.data.citadels_per_player }).map(() => {
+      return { kind: "Citadel", created_by: id, id: generate_code() }
+    })
+
+    return {
+      name,
+      id,
+      personal_stash: {
+        name: "Personal Stash",
+        entities: [...lands, ...citadels],
+      },
+      player_order: this.players.length,
+    }
   }
 
 }
