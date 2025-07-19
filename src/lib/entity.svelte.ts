@@ -1,31 +1,11 @@
-import { arrayRemove, arrayUnion, doc, increment, updateDoc } from "firebase/firestore";
-import type { EntityData } from "./data";
-import { GameError, RuleViolation } from "./errors";
-import type { Game } from "./game.svelte";
-import type { Tile } from "./tile.svelte";
-import { db } from "./firebase";
+import { Action } from "./action"
+import { GameError, RuleViolation } from "./errors"
+import type { EntityData } from "./data"
+import type { Game } from "./game.svelte"
+import type { Tile } from "./tile.svelte"
 
 
 export enum Layer {WATER, LAND, WALKING, FLYING}
-
-export class Action {
-  static action_name: string = '<The generic base action name> override this.'
-  execute(target: Tile) {
-    throw new GameError("Action.execute must be overridden in subclasses.")
-  }
-  check(target: Tile) {
-    return
-  }
-  description(target: Tile): string {
-    return `${Action.action_name} this ${this.entity.data.kind} on ${target.coordinate_data}.`
-  }
-
-  constructor(public entity: Entity, public game: Game) {
-    this.entity = entity
-    this.game = game
-  }
-}
-
 
 export class Entity {
   data: EntityData
@@ -60,8 +40,13 @@ export class Entity {
       throw new GameError(`It is not ${this.game.me.data.name}'s turn.`)
     }
     const action = new SelectedAction(this, this.game)
-    action.check(target)
-    action.execute(target)
+    const new_game = action.simulate(target)
+    if (!new_game.board.citadels_are_connected) {
+      throw new RuleViolation(`This action would disconnect the citadels.`)
+    }
+    action.check(target, this.game, new_game)
+    action.execute(target, this.game)
+    this.game.update_game()
   }
 
   get_action(action_name: string): typeof Action {
@@ -71,19 +56,3 @@ export class Entity {
 }
 
 
-export class Place extends Action {
-    static action_name = 'place'
-    check(target: Tile) {
-      // Cannot place on a tile that already has an entity at the same layer
-      if (target.has_entity_at_layer(this.entity.layer)) {
-        throw new RuleViolation(`Tile ${target.coordinate_data} already has an ${target.get_entity_at_layer(this.entity.layer)!.data.kind} at layer ${this.entity.layer}.`)
-      }
-    }
-    execute(target: Tile): void {
-      updateDoc(doc(db, 'games', this.game!.game_code!), {
-        [`board.tiles.${target.coordinate_data}.entities`]: arrayUnion(this.entity.data),
-        [`players.${this.game!.me!.data.id}.personal_stash.entities`]: arrayRemove(this.entity.data),
-        'turn': increment(1)
-      })
-    }
-}

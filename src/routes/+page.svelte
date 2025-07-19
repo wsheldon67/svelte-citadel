@@ -1,27 +1,17 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { db, auth } from '$lib/firebase'
-  import { Game, type GameConfig } from '$lib/game.svelte'
+  import { blank_config, Game, type GameConfig } from '$lib/game.svelte'
   import { doc, setDoc } from 'firebase/firestore'
   import { generate_code } from '$lib/util'
-  import { Player } from '$lib/player.svelte'
   import { onMount } from 'svelte'
   import { generate_name } from '$lib/name_generator'
-    import JoinGame from '$lib/JoinGame.svelte';
+  import JoinGame from '$lib/JoinGame.svelte'
 
   let game_code = $state('')
   let player_name = $state('')
 
-  async function join_game(event: SubmitEvent) {
-
-  }
-
-  let game_config:GameConfig = $state({
-    lands_per_player: 4,
-    personal_pieces_per_player: 3,
-    community_pieces_per_player: 2,
-    citadels_per_player: 1,
-  })
+  let game_config:GameConfig = $state(blank_config)
 
   async function start_game(event: SubmitEvent) {
     event.preventDefault()

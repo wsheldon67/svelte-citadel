@@ -5,6 +5,9 @@
   import type { Entity } from './entity.svelte'
   import type { Tile } from './tile.svelte'
   import { RuleViolation } from './errors'
+  import { doc, updateDoc } from 'firebase/firestore'
+  import { db } from './firebase'
+  import { GamePhase } from './data'
 
   const { game }: { game: Game } = $props()
 
@@ -23,6 +26,14 @@
     }
   }
 
+  async function start_piece_selection(event: MouseEvent) {
+    event.preventDefault()
+
+    updateDoc(doc(db, 'games', game.game_code!), {
+      phase: GamePhase.PIECE_SELECTION
+    })
+  }
+
 </script>
 
 {#if game.current_player}
@@ -37,5 +48,8 @@
 <p>Signed in player is not in this game.</p>
 {/if}
 
-
 <BoardUI board={game.board} on_click={on_board_click} />
+
+{#if game.all_personal_stashes.length == 0}
+  <button onclick={start_piece_selection}>Continue</button>
+{/if}

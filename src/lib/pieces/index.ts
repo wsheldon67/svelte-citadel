@@ -1,5 +1,6 @@
 import type { EntityData } from '$lib/data'
-import { Entity, Layer, Place } from '$lib/entity.svelte'
+import { Entity, Layer } from '$lib/entity.svelte'
+import { Place } from "$lib/action"
 import { RuleViolation } from '$lib/errors'
 import type { Game } from '$lib/game.svelte'
 import type { Tile } from '../tile.svelte'
@@ -26,9 +27,9 @@ export class Land extends Entity {
 
   actions = [
     class PlaceLand extends Place {
-      check(target: Tile) {
-        super.check(target)
-        const number_of_lands = this.game!.board.get_entities_at_layer(Layer.LAND).length
+      check(target: Tile, current_game: Game, new_game: Game) {
+        super.check(target, current_game, new_game)
+        const number_of_lands = current_game.board.get_entities_at(Layer.LAND).length
         const has_adjacent_land = target.adjacent_tiles.has_entity_at_layer(Layer.LAND)
         if (number_of_lands > 0 && !has_adjacent_land) {
           throw new RuleViolation(`Land can only be placed on a tile adjacent to another land tile.`)
@@ -44,6 +45,18 @@ export class Citadel extends Entity {
     super(data, game)
     this.img_path = 'shared/Citadel.png'
   }
+
+  actions = [
+    class PlaceCitadel extends Place {
+      check(target: Tile, current_game: Game, new_game: Game) {
+        super.check(target, current_game, new_game)
+        const all_lands = current_game.all_personal_stashes.get_entities_at_layer(Layer.LAND)
+        if (all_lands.length > 0) {
+          throw new RuleViolation(`Citadels can only be placed after all lands have been placed.`)
+        }
+      }
+    }
+  ]
 }
 
 export class Water extends Entity {
