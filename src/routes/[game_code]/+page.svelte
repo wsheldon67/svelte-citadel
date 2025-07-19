@@ -1,13 +1,13 @@
 <script lang="ts">
   import { page } from '$app/state'
-  import Battle from '$lib/Battle.svelte'
-  import LandPlacement from '$lib/LandPlacement.svelte'
+  import Battle from '$lib/phases/Battle.svelte'
+  import LandPlacement from '$lib/phases/LandPlacement.svelte'
   import ObjectViewer from '$lib/ObjectViewer.svelte'
   import { Game, blank_config } from '$lib/game.svelte'
   import { debug } from '$lib/util.svelte'
   import { onMount } from 'svelte'
   import { GamePhase } from '$lib/data'
-  import LobbyUI from '$lib/LobbyUI.svelte'
+  import LobbyUI from '$lib/phases/LobbyUI.svelte'
 
   let game = $state(Game.fromConfig(blank_config))
 

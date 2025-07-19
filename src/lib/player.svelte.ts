@@ -1,7 +1,7 @@
 import { type PlayerData } from "./data"
 import type { Entity } from "./entity.svelte"
+import { EntityList } from "./entity_list.svelte"
 import type { Game } from "./game.svelte"
-import { get_entity } from "./pieces"
 
 export type PlayerConfig = {
   name: string
@@ -11,13 +11,16 @@ export type PlayerConfig = {
 }
 
 export class Player {
-  personal_stash: Entity[]
+  personal_stash: EntityList
 
-  constructor (public data:PlayerData, public game: Game | null = null) {
+  constructor (public data:PlayerData, entity_types: {[entity_name: string]: typeof Entity}, public game: Game | null = null) {
     this.data = data
     this.game = game
     this.personal_stash = $derived(
-      this.data.personal_stash.entities.map(entityData => get_entity(entityData, this.game))
+      new EntityList({
+        name: `${this.data.name}'s Personal Stash`,
+        entities: this.data.personal_stash.entities
+      }, entity_types, this.game)
     )
   }
 

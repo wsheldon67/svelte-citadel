@@ -4,11 +4,14 @@ import { db, auth } from "./firebase"
 import { Player } from './player.svelte'
 import { Board } from './board.svelte'
 import { onAuthStateChanged, type User } from "firebase/auth"
-import type { Entity } from "./entity.svelte"
-import type { Tile } from "./tile.svelte"
 import { AuthenticationError, GameError } from "./errors"
 import { generate_code } from "./util"
 import { EntityList } from "./entity_list.svelte"
+import type { Entity } from "./entity.svelte"
+import type { Tile } from "./tile.svelte"
+import { Water } from "./pieces"
+import { Citadel } from './pieces/citadel'
+import { Land } from './pieces/land'
 
 export type GameConfig = {
   lands_per_player: number;
@@ -35,10 +38,9 @@ const blank_game_data: GameData = {
 }
 
 export class Game {
-  public data: GameData = $state(blank_game_data)
-  public game_code: string | null = $state(null)
-
-  public current_user: User | null = $state(null)
+  data: GameData = $state(blank_game_data)
+  game_code: string | null = $state(null)
+  current_user: User | null = $state(null)
 
 
   constructor(data: GameData) {
@@ -49,30 +51,30 @@ export class Game {
   }
 
 
-  public players: Player[] = $derived(
+  players: Player[] = $derived(
     Object.values(this.data.players)
-      .map(playerData => new Player(playerData, this))
+      .map(playerData => new Player(playerData, this.entity_types, this))
       .sort((a, b) => a.data.player_order - b.data.player_order)
   )
 
-  public me: Player | null  = $derived(
+  me: Player | null  = $derived(
     this.current_user && this.players ? this.players.find(player => player.data.id === this.current_user?.uid) || null : null
   )
 
-  public board: Board = $derived(new Board(this.data.board, this))
+  board: Board = $derived(new Board(this.data.board, this))
 
-  public current_player: Player = $derived(
+  current_player: Player = $derived(
     this.players[this.data.turn % this.players.length]
   )
 
-  public all_personal_stashes: EntityList = $derived.by(() => {
+  all_personal_stashes: EntityList = $derived.by(() => {
     const entities = []
     for (const player of this.players) {
-      entities.push(...player.personal_stash.map(entity => entity.data))
+      entities.push(...player.personal_stash.entities.map(entity => entity.data))
     }
     return new EntityList({
       entities, name: "All Personal Stashes"
-    }, this)
+    }, this.entity_types, this)
   })
 
 
@@ -94,6 +96,14 @@ export class Game {
         console.error("No such document!")
       }
     })
+  }
+
+
+  entity_types = {
+    'Land': Land,
+    'Citadel': Citadel,
+    'Water': Water,
+
   }
 
 
