@@ -27,7 +27,7 @@ export const blank_config: GameConfig = {
   citadels_per_player: 1,
 }
 
-const blank_game_data: GameData = {
+export const blank_game_data: GameData = {
   players: {},
   board: { name: "Main", tiles: {} },
   turn: 1,
@@ -46,8 +46,11 @@ export class Game {
   constructor(data: GameData) {
     this.data = data
     onAuthStateChanged(auth, user => this.current_user = user)
-    // @ts-ignore
-    window.game = this // For debugging purposes
+    // For debugging purposes in browser only
+    if (typeof window !== 'undefined') {
+      // @ts-ignore
+      window.game = this
+    }
   }
 
 
