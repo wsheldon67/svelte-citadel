@@ -41,4 +41,22 @@ export class Player {
     }, this.game.entity_types, this.game)
   }
 
+  get is_done_choosing_personal_pieces(): boolean {
+    if (!this.game) {
+      throw new Error("Game is not set for this player")
+    }
+    return this.data.personal_stash.entities.length >= this.game!.data.personal_pieces_per_player
+  }
+
+  get is_done_choosing_community_pieces(): boolean {
+    if (!this.game) {
+      throw new Error("Game is not set for this player")
+    }
+    return this.community_pieces.entities.length >= this.game!.data.community_pieces_per_player
+  }
+
+  get is_done_choosing_pieces(): boolean {
+    return this.is_done_choosing_personal_pieces && this.is_done_choosing_community_pieces
+  }
+
 }
