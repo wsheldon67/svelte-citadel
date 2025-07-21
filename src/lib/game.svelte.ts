@@ -9,9 +9,10 @@ import { generate_code } from "./util"
 import { EntityList } from "./entity_list.svelte"
 import type { Entity } from "./entity.svelte"
 import type { Tile } from "./tile.svelte"
-import { Water } from "./pieces"
+import { Piece, Water } from "./pieces"
 import { Citadel } from './pieces/citadel'
 import { Land } from './pieces/land'
+import { Builder } from "./pieces/builder"
 
 export type GameConfig = {
   lands_per_player: number;
@@ -102,11 +103,22 @@ export class Game {
   }
 
 
+  get piece_types(): {[entity_name: string]: typeof Piece} {
+    const res: {[entity_name: string]: typeof Piece} = {}
+    for (const [key, value] of Object.entries(this.entity_types)) {
+      if (value.prototype instanceof Piece) {
+        res[key] = value as typeof Piece
+      }
+    }
+    return res
+  }
+
+
   entity_types = {
     'Land': Land,
     'Citadel': Citadel,
     'Water': Water,
-
+    'Builder': Builder
   }
 
 
@@ -147,6 +159,7 @@ export class Game {
         name: "Personal Stash",
         entities: [...lands, ...citadels],
       },
+      piece_selection_confirmed: false,
       player_order: this.players.length,
     }
   }

@@ -1,5 +1,6 @@
 import type { EntityData } from '$lib/data'
 import { Entity, Layer } from '$lib/entity.svelte'
+import type { Game } from '$lib/game.svelte'
 import type { Tile } from '../tile.svelte'
 
 export class Water extends Entity {
@@ -13,8 +14,8 @@ export class Water extends Entity {
 export class Piece extends Entity {
   tile: Tile | null = null
 
-  constructor(public data: any) {
-    super(data)
+  constructor(public data: any, game: Game | null = null) {
+    super(data, game)
   }
 
   move_to(target: Tile) {

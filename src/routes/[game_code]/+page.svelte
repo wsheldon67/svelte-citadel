@@ -8,6 +8,7 @@
   import { onMount } from 'svelte'
   import { GamePhase } from '$lib/data'
   import LobbyUI from '$lib/phases/LobbyUI.svelte'
+  import PieceSelection from '$lib/phases/PieceSelection.svelte'
 
   let game = $state(Game.fromConfig(blank_config))
 
@@ -23,8 +24,7 @@
 {:else if game.data.phase === GamePhase.LAND_PLACEMENT}
   <LandPlacement {game} />
 {:else if game.data.phase === GamePhase.PIECE_SELECTION}
-  <!--PieceSelection {game} /-->
-  <p>piece selection</p>
+  <PieceSelection {game} />
 {:else if game.data.phase === GamePhase.BATTLE}
   <Battle {game} />
 {:else if game.data.phase === GamePhase.END}

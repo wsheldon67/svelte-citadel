@@ -14,6 +14,7 @@ export type PlayerData = {
   name: string
   id: string
   personal_stash: EntityListData
+  piece_selection_confirmed: boolean
   player_order: number
 }
 

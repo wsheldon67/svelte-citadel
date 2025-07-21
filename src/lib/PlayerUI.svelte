@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Player } from '$lib/player.svelte'
   import EntityUI from '$lib/EntityUI.svelte'
-  import type { Entity } from './entity.svelte';
+  import type { Entity } from './entity.svelte'
 
   let {
     player,
@@ -25,7 +25,7 @@
 </script>
 <h2>{player.data.name}</h2>
 <div class="personal-stash">
-  {#each player.personal_stash as entity}
+  {#each player.personal_stash.entities as entity}
     <EntityUI {entity}
       on_click={() => handle_personal_stash_click(entity)}
       selected={selected_personal_stash === entity}

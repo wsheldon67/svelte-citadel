@@ -29,4 +29,16 @@ export class Player {
       .filter(e => e.id !== entity.data.id)
   }
 
+  get community_pieces(): EntityList {
+    if (!this.game) {
+      throw new Error("Game is not set for this player")
+    }
+    const entities = this.game.data.community_pool.entities.filter(e => e.created_by === this.data.id)
+
+    return new EntityList({
+      name: `${this.data.name}'s Community Pieces`,
+      entities
+    }, this.game.entity_types, this.game)
+  }
+
 }

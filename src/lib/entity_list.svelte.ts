@@ -22,7 +22,7 @@ export class EntityList {
   }
 
   get length(): number {
-    return this.entities.length
+    return this.data.entities.length
   }
 
   get_entity_at_layer(layer: Layer): Entity | null {

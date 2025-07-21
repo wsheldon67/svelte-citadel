@@ -46,13 +46,13 @@ export class Board {
 
     if (typeof locator === "string") {
       const entities = this.get_tile_at(locator).entities.map(entity => entity.data)
-      return new EntityList({entities, name: `Entities at ${locator}`}, this.game)
+      return new EntityList({entities, name: `Entities at ${locator}`}, this.game!.entity_types, this.game)
 
     } else if (typeof locator === "number") {
     const entities = this.tiles
       .map(tile => tile.get_entity_at_layer(locator)?.data)
       .filter(entity => entity !== undefined)
-    return new EntityList({entities, name: `Entities at layer ${locator}`}, this.game)
+    return new EntityList({entities, name: `Entities at layer ${locator}`}, this.game!.entity_types, this.game)
     
     } else {
       throw new Error(`Invalid locator type: Expected Coordinate or Layer, got '${typeof locator}'`)
@@ -113,7 +113,7 @@ export class Board {
 
   get_entities_by_kind(kind: string): EntityList {
     const entities = this.tiles.flatMap(tile => tile.entities.filter(entity => entity.data.kind === kind).map(entity => entity.data))
-    return new EntityList({entities, name: `Entities of kind ${kind}`}, this.game)
+    return new EntityList({entities, name: `Entities of kind ${kind}`}, this.game!.entity_types, this.game)
   }
 
   get citadels_are_connected(): boolean {

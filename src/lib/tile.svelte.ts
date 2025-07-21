@@ -14,7 +14,7 @@ export class Tile extends EntityList {
   coordinate: Coordinate = $derived.by(() => new Coordinate(this.coordinate_data))
 
   constructor(data: EntityListData, coordinate_data:CoordinateData, game:Game|null = null) {
-    super(data, game)
+    super(data, game!.entity_types, game)
     this.coordinate_data = coordinate_data
   }
 
@@ -55,7 +55,7 @@ export class Tile extends EntityList {
     return new Board({
       name: `Adjacent Tiles of ${this.coordinate_data}`,
       tiles: filtered_tiles
-    })
+    }, this.game)
   }
 
   get_entity_by_kind(kind: string): Entity | null {

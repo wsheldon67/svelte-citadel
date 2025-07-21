@@ -1,9 +1,16 @@
+import type { EntityData } from '$lib/data'
+import type { Game } from '$lib/game.svelte'
 import type { Tile } from '$lib/tile.svelte'
 import { Piece } from '.'
 
 
-class Builder extends Piece {
-  selected_land: Tile | null = null;
+export class Builder extends Piece {
+  selected_land: Tile | null = null
+  constructor(data: EntityData, game: Game|null=null) {
+    super(data, game)
+    this.img_path = 'shared/Builder.png'
+  }
+
 
   can_move_to(target: Tile) {
     return target.is_orthagonal_to(this.tile!)
