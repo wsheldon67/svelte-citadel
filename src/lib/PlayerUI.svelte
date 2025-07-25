@@ -6,7 +6,7 @@
   let {
     player,
     on_personal_stash_click = () => {},
-    selected_personal_stash = $bindable(null),
+    selected_personal_stash = null,
   }: {
     player: Player,
     on_personal_stash_click?: (entity: Entity) => void,
@@ -14,12 +14,8 @@
   } = $props()
 
   function handle_personal_stash_click(entity: Entity) {
+    console.log('Personal stash clicked:', entity)
     on_personal_stash_click(entity)
-    if (selected_personal_stash === entity) {
-      selected_personal_stash = null
-    } else {
-      selected_personal_stash = entity
-    }
   }
 
 </script>

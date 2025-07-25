@@ -2,6 +2,7 @@
 export type EntityData = {
   kind: string
   created_by: string
+  owner: string|null
   id: string
 }
 

@@ -1,5 +1,5 @@
 import { GameError, RuleViolation } from "./errors"
-import { Game } from "./game.svelte"
+import type { Game } from "./game.svelte"
 import type { Tile } from "./tile.svelte"
 import type { Entity } from "./entity.svelte"
 
@@ -17,7 +17,7 @@ export class Action {
   }
 
   simulate(target: Tile): Game {
-    const new_game = new Game(JSON.parse(JSON.stringify(this.game.data)))
+    const new_game = this.game.copy()
     new_game.current_user = this.game.current_user
     this.execute(target, new_game)
     return new_game

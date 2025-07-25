@@ -1,3 +1,4 @@
+import { Place, type Action } from '$lib/action'
 import type { EntityData } from '$lib/data'
 import type { Game } from '$lib/game.svelte'
 import type { Tile } from '$lib/tile.svelte'
@@ -10,6 +11,10 @@ export class Builder extends Piece {
     super(data, game)
     this.img_path = 'shared/Builder.png'
   }
+
+  actions: typeof Action[] = [
+    Place
+  ]
 
 
   can_move_to(target: Tile) {

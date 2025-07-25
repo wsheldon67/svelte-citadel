@@ -6,18 +6,19 @@ import type { Game } from "./game.svelte"
 import { create_water_tile, Tile } from "./tile.svelte"
 
 export class Board {
-  data: BoardData = $state({name: 'not initialized', tiles: {}})
+  // data: BoardData = $state({name: 'not initialized', tiles: {}})
+  tiles: Tile[]
 
-  constructor(data:BoardData, public game:Game|null=null) {
-    this.data = data
+  constructor(public data:BoardData, public game:Game|null=null) {
     this.game = game
+    this.tiles = $derived(
+      Object.entries(this.data.tiles).map(([coordinate_data, tile_data]) => {
+        return new Tile(tile_data, coordinate_data as CoordinateData, this.game)
+      })
+  )
   }
 
-  tiles: Tile[] = $derived(
-    Object.entries(this.data.tiles).map(([coordinate_data, tile_data]) => {
-      return new Tile(tile_data, coordinate_data as CoordinateData, this.game)
-    })
-  )
+
 
   extents: {
     x_min: number, x_max: number, y_min: number, y_max: number

@@ -21,7 +21,7 @@ export class Entity {
 
   actions: typeof Action[] = []
 
-  do_action(action_name:string, target:Tile) {
+  check_action(action_name: string, target: Tile): Action {
     // Throw general game errors applicable to all actions
     const SelectedAction = this.actions.find(action => action.action_name === action_name)
     if (!SelectedAction) {
@@ -45,12 +45,36 @@ export class Entity {
       throw new RuleViolation(`This action would disconnect the citadels.`)
     }
     action.check(target, this.game, new_game)
-    action.execute(target, this.game)
-    this.game.update_game()
+    return action
+  }
+
+  do_action(action_name:string, target:Tile) {
+    const action = this.check_action(action_name, target)
+    action.execute(target, this.game!)
+    this.game!.update_game()
   }
 
   get_action(action_name: string): typeof Action {
     return this.actions.find(action => action.action_name === action_name)!
+  }
+
+  has_action_on_tile(x: number, y: number): boolean {
+    if (!this.game) {
+      return false
+    }
+    const tile = this.game.board.get_tile_at(x, y)
+    return this.actions.some(action => {
+      try {
+        this.check_action(action.action_name, tile)
+        console.log(`Action ${action.action_name} is valid on tile (${x}, ${y}) for entity ${this.data.kind}`)
+        return true
+      } catch (e) {
+        console.log(`Action ${action.action_name} is NOT valid on tile (${x}, ${y}) for entity ${this.data.kind}:`, e)
+        if (e instanceof GameError) return false
+        if (e instanceof RuleViolation) return false
+        throw e // rethrow unexpected errors
+      }
+    })
   }
 
 }

@@ -1,21 +1,20 @@
-import { Board } from "./board.svelte";
-import { Coordinate } from "./coordinate.svelte";
-import type { CoordinateData, EntityListData } from "./data";
-import { Layer, type Entity } from "./entity.svelte";
-import { EntityList } from "./entity_list.svelte";
-import { GameError } from "./errors";
-import type { Game } from "./game.svelte";
-import { generate_code } from "./util";
+import { Board } from "./board.svelte"
+import { Coordinate } from "./coordinate.svelte"
+import { generate_code } from "./util"
+import { EntityList } from "./entity_list.svelte"
+import { GameError } from "./errors"
+import type { Game } from "./game.svelte"
+import type { CoordinateData, EntityListData } from "./data"
+
 
 
 export class Tile extends EntityList {
-  coordinate_data: CoordinateData = $state('0,0')
+  // coordinate_data: CoordinateData = $state('0,0')
 
   coordinate: Coordinate = $derived.by(() => new Coordinate(this.coordinate_data))
 
-  constructor(data: EntityListData, coordinate_data:CoordinateData, game:Game|null = null) {
+  constructor(data: EntityListData, public coordinate_data:CoordinateData, game:Game|null = null) {
     super(data, game!.entity_types, game)
-    this.coordinate_data = coordinate_data
   }
 
   get x(): number {return this.coordinate.x}
@@ -57,29 +56,13 @@ export class Tile extends EntityList {
       tiles: filtered_tiles
     }, this.game)
   }
-
-  get_entity_by_kind(kind: string): Entity | null {
-    return this.entities.find(entity => entity.data.kind === kind) || null
-  }
-
-  has_entity_by_kind(kind: string): boolean {
-    return this.get_entity_by_kind(kind) !== null
-  }
-
-  get_entity_at_layer(layer: Layer): Entity | null {
-    return this.entities.find(entity => entity.layer === layer) || null
-  }
-
-  has_entity_at_layer(layer: Layer): boolean {
-    return this.get_entity_at_layer(layer) !== null
-  }
 }
 
 export function create_water_tile(coordinate_data: CoordinateData, game:Game|null=null): Tile {
   return new Tile({
     name: coordinate_data,
     entities: [
-      { kind: 'Water', created_by: 'game', id: generate_code()}
+      { kind: 'Water', created_by: 'game', owner: 'game', id: generate_code()}
     ],
   }, coordinate_data, game)
 }

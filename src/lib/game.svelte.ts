@@ -7,12 +7,12 @@ import { onAuthStateChanged, type User } from "firebase/auth"
 import { AuthenticationError, GameError } from "./errors"
 import { generate_code } from "./util"
 import { EntityList } from "./entity_list.svelte"
-import type { Entity } from "./entity.svelte"
-import type { Tile } from "./tile.svelte"
 import { Piece, Water } from "./pieces"
 import { Citadel } from './pieces/citadel'
 import { Land } from './pieces/land'
 import { Builder } from "./pieces/builder"
+import type { Entity } from "./entity.svelte"
+import type { Tile } from "./tile.svelte"
 
 export type GameConfig = {
   lands_per_player: number;
@@ -145,11 +145,11 @@ export class Game {
   create_player_data(name: string, id: string): PlayerData {
 
     const lands = Array.from({ length: this.data.lands_per_player }).map(() => {
-      return { kind: "Land", created_by: id, id: generate_code() }
+      return { kind: "Land", created_by: id, owner: null, id: generate_code() }
     })
 
     const citadels = Array.from({ length: this.data.citadels_per_player }).map(() => {
-      return { kind: "Citadel", created_by: id, id: generate_code() }
+      return { kind: "Citadel", created_by: id, owner: id, id: generate_code() }
     })
 
     return {
@@ -168,6 +168,10 @@ export class Game {
     if (!this.game_code) throw new GameError("Game code is not set")
 
     setDoc(doc(db, "games", this.game_code), this.data)
+  }
+
+  copy(): Game {
+    return new Game(JSON.parse(JSON.stringify(this.data)))
   }
 
 }

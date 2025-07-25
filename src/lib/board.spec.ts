@@ -1,6 +1,16 @@
 import { describe, it, expect } from "vitest"
 
 import { Board } from "./board.svelte"
+import type { EntityData } from "./data"
+
+function create_entity_data(kind: string, id: string): EntityData {
+  return {
+    kind,
+    created_by: "test",
+    owner: "test",
+    id
+  }
+}
 
 
 describe("Board.citadels_are_connected", () => {
@@ -8,7 +18,7 @@ describe("Board.citadels_are_connected", () => {
     const board = new Board({
       name: "test",
       tiles: {
-        "0,0": { name: "tile", entities: [{ kind: "Land", created_by: "", id: "" }] }
+        "0,0": { name: "tile", entities: [create_entity_data("Land", "")] }
       }
     })
     
@@ -19,9 +29,9 @@ describe("Board.citadels_are_connected", () => {
     const board = new Board({
       name: "test",
       tiles: {
-        "0,0": { name: "tile2", entities: [{ kind: "Land", created_by: "", id: "1" }, { kind: "Citadel", created_by: "", id: "4" }] },
-        "0,1": { name: "tile3", entities: [{ kind: "Land", created_by: "", id: "2" }] },
-        "0,2": { name: "tile4", entities: [{ kind: "Land", created_by: "", id: "3" }, { kind: "Citadel", created_by: "", id: "5" }] }
+        "0,0": { name: "tile2", entities: [create_entity_data("Land", "1"), create_entity_data("Citadel", "4")] },
+        "0,1": { name: "tile3", entities: [create_entity_data("Land", "2")] },
+        "0,2": { name: "tile4", entities: [create_entity_data("Land", "3"), create_entity_data("Citadel", "5")] }
       }
     })
 
@@ -32,9 +42,9 @@ describe("Board.citadels_are_connected", () => {
     const board = new Board({
       name: "test",
       tiles: {
-        "0,0": { name: "tile1", entities: [{ kind: "Land", created_by: "", id: "1" }, { kind: "Citadel", created_by: "", id: "2" }] },
-        "0,1": { name: "tile2", entities: [{ kind: "Land", created_by: "", id: "3" }] },
-        "1,2": { name: "tile3", entities: [{ kind: "Land", created_by: "", id: "4" }, { kind: "Citadel", created_by: "", id: "5" }] }
+        "0,0": { name: "tile1", entities: [create_entity_data("Land", "1"), create_entity_data("Citadel", "2")] },
+        "0,1": { name: "tile2", entities: [create_entity_data("Land", "3")] },
+        "1,2": { name: "tile3", entities: [create_entity_data("Land", "4"), create_entity_data("Citadel", "5")] }
       }
     })
 

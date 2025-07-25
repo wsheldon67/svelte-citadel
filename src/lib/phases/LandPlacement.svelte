@@ -43,7 +43,10 @@
 {error_message}
 
 {#if game.me}
-<PlayerUI player={game.me} bind:selected_personal_stash on_personal_stash_click={() => error_message = ''}/>
+<PlayerUI player={game.me}
+  on_personal_stash_click={(entity) => { selected_personal_stash = entity; error_message = ''; }}
+  {selected_personal_stash}
+/>
 {:else}
 <p>Signed in player is not in this game.</p>
 {/if}
