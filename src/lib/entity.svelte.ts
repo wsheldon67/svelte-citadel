@@ -12,19 +12,22 @@ export class Entity {
   img_path: string;
   layer: Layer = Layer.WALKING
   game: Game | null = null
+  actions: Action[]
+
+  action_types: typeof Action[] = []
 
   constructor(data: EntityData, game: Game | null = null) {
     this.data = data
     this.img_path = 'default image path; override in subclasses'
     this.game = game
+    this.actions = this.action_types.map(action_type => new action_type(this, game!))
   }
 
-  actions: typeof Action[] = []
 
   check_action(action_name: string, target: Tile): Action {
     // Throw general game errors applicable to all actions
-    const SelectedAction = this.actions.find(action => action.action_name === action_name)
-    if (!SelectedAction) {
+    const action = this.actions.find(action => action.action_name === action_name)
+    if (!action) {
       throw new GameError(`Action ${action_name} is not defined for entity kind '${this.data.kind}'`)
     }
     if (!this.game) {
@@ -39,7 +42,6 @@ export class Entity {
     if (this.game.me !== this.game.current_player) {
       throw new GameError(`It is not ${this.game.me.data.name}'s turn.`)
     }
-    const action = new SelectedAction(this, this.game)
     const new_game = action.simulate(target)
     if (!new_game.board.citadels_are_connected) {
       throw new RuleViolation(`This action would disconnect the citadels.`)
@@ -54,7 +56,7 @@ export class Entity {
     this.game!.update_game()
   }
 
-  get_action(action_name: string): typeof Action {
+  get_action(action_name: string): Action {
     return this.actions.find(action => action.action_name === action_name)!
   }
 
@@ -92,7 +94,7 @@ export class Entity {
         }
         throw e // rethrow unexpected errors
       }
-    }).map(action => new action(this, this.game!))
+    })
   }
 
 }

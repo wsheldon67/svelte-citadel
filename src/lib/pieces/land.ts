@@ -13,7 +13,7 @@ export class Land extends Entity {
     this.layer = Layer.LAND
   }
 
-  actions = [
+  actions_types = [
     class PlaceLand extends Place {
       check(target: Tile, current_game: Game, new_game: Game) {
         super.check(target, current_game, new_game)

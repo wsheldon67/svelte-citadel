@@ -67,7 +67,7 @@
   <div class="floating-action-menu">
     {#each floating_action_menu.actions as action}
       <button onclick={() => floating_action_menu_click(action)}>
-        {action.name}
+        {action.action_name}
       </button>
     {/each}
   </div>

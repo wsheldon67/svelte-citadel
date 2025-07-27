@@ -5,7 +5,7 @@ import type { Entity } from "./entity.svelte"
 
 
 export class Action {
-  static action_name: string = '<The generic base action name> override this.'
+  action_name: string = '<The generic base action name> override this.'
   // TODO: The static property is so annoying to use. Every time I need an action, I usually
   // also need its name, so using the static property means I always have to have both the class
   // and the instance.
@@ -16,7 +16,7 @@ export class Action {
     return;
   }
   description(target: Tile): string {
-    return `${Action.action_name} this ${this.entity.data.kind} on ${target.coordinate_data}.`;
+    return `${this.action_name} this ${this.entity.data.kind} on ${target.coordinate_data}.`;
   }
 
   simulate(target: Tile): Game {
@@ -32,7 +32,7 @@ export class Action {
   }
 }
 export class Place extends Action {
-  static action_name = 'place'
+  action_name = 'place'
 
   check(target: Tile, current_game: Game, new_game: Game): void {
     // Cannot place on a tile that already has an entity at the same layer

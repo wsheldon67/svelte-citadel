@@ -12,10 +12,9 @@ export class Builder extends Piece {
     this.img_path = 'shared/Builder.png'
   }
 
-  actions: typeof Action[] = [
+  action_types: typeof Action[] = [
     Place
   ]
-
 
   can_move_to(target: Tile) {
     return target.is_orthagonal_to(this.tile!)

@@ -12,7 +12,7 @@ export class Citadel extends Entity {
     this.img_path = 'shared/Citadel.png';
   }
 
-  actions = [
+  action_types = [
     class PlaceCitadel extends Place {
       check(target: Tile, current_game: Game, new_game: Game) {
         super.check(target, current_game, new_game);
