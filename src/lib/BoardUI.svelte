@@ -21,7 +21,7 @@
     on_click?: (tile: Tile) => void
     on_select_entity?: (entity: Entity) => void
     selected_entity?: Entity | null
-    on_click_with_selected?: (tile: Tile, entity: Entity | null) => void
+    on_click_with_selected?: (tile: Tile, entity: Entity) => void
     highlighted?: [number, number][],
   } = $props();
 

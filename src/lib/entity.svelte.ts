@@ -77,6 +77,24 @@ export class Entity {
     })
   }
 
+  get_actions_on_tile(x: number, y: number): Action[] {
+    if (!this.game) {
+      return []
+    }
+    const tile = this.game.board.get_tile_at(x, y)
+    return this.actions.filter(action => {
+      try {
+        this.check_action(action.action_name, tile)
+        return true
+      } catch (e) {
+        if (e instanceof GameError || e instanceof RuleViolation) {
+          return false
+        }
+        throw e // rethrow unexpected errors
+      }
+    }).map(action => new action(this, this.game!))
+  }
+
 }
 
 

@@ -6,6 +6,9 @@ import type { Entity } from "./entity.svelte"
 
 export class Action {
   static action_name: string = '<The generic base action name> override this.'
+  // TODO: The static property is so annoying to use. Every time I need an action, I usually
+  // also need its name, so using the static property means I always have to have both the class
+  // and the instance.
   execute(target: Tile, game: Game) {
     throw new GameError("Action.execute must be overridden in subclasses.")
   }
