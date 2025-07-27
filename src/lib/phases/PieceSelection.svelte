@@ -14,7 +14,10 @@
   function on_select(kind: string, EntityType: typeof Entity) {
     updateDoc(doc(db, 'games', game.game_code!), {
       [`players.${game.me!.data.id}.personal_stash.entities`]: arrayUnion({
-        kind, created_by: game.me!.data.id, id: generate_code(6)
+        kind,
+        created_by: game.me!.data.id,
+        id: generate_code(6),
+        owner: game.me!.data.id
       })
     })
   }

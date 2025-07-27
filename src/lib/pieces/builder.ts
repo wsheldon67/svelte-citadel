@@ -1,19 +1,32 @@
-import { Place, type Action } from '$lib/action'
+import { type Action } from '$lib/action'
+import { Move, Place } from "$lib/base_actions"
 import type { EntityData } from '$lib/data'
+import type { EntityList } from '$lib/entity_list.svelte'
+import { RuleViolation } from '$lib/errors'
 import type { Game } from '$lib/game.svelte'
 import type { Tile } from '$lib/tile.svelte'
 import { Piece } from '.'
 
+class BuilderMove extends Move {
+
+  check(target: Tile, current_game: Game, new_game: Game): void {
+    super.check(target, current_game, new_game)
+    if (!target.is_orthagonal_to(this.entity.location as Tile)) {
+      throw new RuleViolation(`Entity ${this.entity.data.kind} can only move to orthagonal tiles.`)
+    }
+  }
+}
+
 
 export class Builder extends Piece {
   selected_land: Tile | null = null
-  constructor(data: EntityData, game: Game|null=null) {
-    super(data, game)
+  constructor(data: EntityData, location: EntityList, game: Game|null=null) {
+    super(data, location, game)
     this.img_path = 'shared/Builder.png'
   }
 
   action_types: typeof Action[] = [
-    Place
+    Place, BuilderMove
   ]
 
   can_move_to(target: Tile) {

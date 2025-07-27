@@ -6,7 +6,7 @@ import type { Player } from "./player.svelte"
 export class EntityList {
   // data: EntityListData = $state({name: 'not initialized', entities: []})
   entities: Entity[] = $derived.by(() => {
-    return this.data.entities.map(entity_data => new this.entity_types[entity_data.kind](entity_data, this.game))
+    return this.data.entities.map(entity_data => new this.entity_types[entity_data.kind](entity_data, this, this.game))
   })
 
 
@@ -37,11 +37,21 @@ export class EntityList {
     return this.entities.includes(entity)
   }
 
-  get_entity_by_kind(kind: string): Entity | null {
-    return this.entities.find(entity => entity.data.kind === kind) || null
+  get_entity_by_kind(kind: string|typeof Entity): Entity | null {
+    if (typeof kind === 'string') {
+      return this.entities.find(entity => entity.data.kind === kind) || null
+    }
+    return this.entities.find(entity => entity instanceof kind) || null
   }
 
-  has_entity_by_kind(kind: string): boolean {
+  get_entities_by_kind(kind: string|typeof Entity): Entity[] {
+    if (typeof kind === 'string') {
+      return this.entities.filter(entity => entity.data.kind === kind)
+    }
+    return this.entities.filter(entity => entity instanceof kind)
+  }
+
+  has_entity_by_kind(kind: string|typeof Entity): boolean {
     return this.get_entity_by_kind(kind) !== null
   }
 

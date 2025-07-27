@@ -16,16 +16,17 @@
     actions: Action[]
   } | null = $state(null)
 
-  let selected_entity = $derived(selected && game.me?.personal_stash.includes(selected) ? selected : null)
+  let selected_entity = $derived(selected && !game.me?.personal_stash.includes(selected) ? selected : null)
   let selected_personal_stash = $derived(selected && game.me?.personal_stash.includes(selected) ? selected : null)
 
   let highlighted = $derived(selected ? game.board.tiles.filter(tile => {
     return selected!.has_action_on_tile(tile.x, tile.y)
   }).map(tile => [tile.x, tile.y]) as [number, number][] : [])
 
-  function on_click_with_selected(tile: Tile, entity: Entity) {
-    const actions = entity.get_actions_on_tile(tile.x, tile.y)
-    if (actions.length == 0) return message = `${entity.data.kind} does not have any valid actions on ${tile.x},${tile.y}.`
+  function on_board_click(tile: Tile) {
+    if (!selected) return
+    const actions = selected.get_actions_on_tile(tile.x, tile.y)
+    if (actions.length == 0) return message = `${selected.data.kind} does not have any valid actions on ${tile.x},${tile.y}.`
     if (actions.length == 1) {
       actions[0].execute(tile, game)
       game.update_game()
@@ -60,7 +61,7 @@
   on_select_entity={entity => selected = entity}
   {selected_entity}
   {highlighted}
-  {on_click_with_selected}
+  on_click={on_board_click}
 />
 
 {#if floating_action_menu}

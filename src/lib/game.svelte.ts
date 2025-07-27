@@ -174,4 +174,8 @@ export class Game {
     return new Game(JSON.parse(JSON.stringify(this.data)))
   }
 
+  add_to_graveyard(entity: Entity): void {
+    this.data.graveyard.entities.push(entity.data)
+  }
+
 }

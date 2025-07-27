@@ -3,6 +3,7 @@ import { GameError, RuleViolation } from "./errors"
 import type { EntityData } from "./data"
 import type { Game } from "./game.svelte"
 import type { Tile } from "./tile.svelte"
+import type { EntityList } from "./entity_list.svelte"
 
 
 export enum Layer {WATER, LAND, WALKING, FLYING}
@@ -12,15 +13,23 @@ export class Entity {
   img_path: string;
   layer: Layer = Layer.WALKING
   game: Game | null = null
-  actions: Action[]
+  #actions: Action[] | null = null
+  location: EntityList
 
   action_types: typeof Action[] = []
 
-  constructor(data: EntityData, game: Game | null = null) {
+  constructor(data: EntityData, location: EntityList, game: Game | null = null) {
     this.data = data
     this.img_path = 'default image path; override in subclasses'
     this.game = game
-    this.actions = this.action_types.map(action_type => new action_type(this, game!))
+    this.location = location
+  }
+
+  get actions(): Action[] {
+    if (!this.#actions) {
+      this.#actions = this.action_types.map(action_type => new action_type(this, this.game!))
+    }
+    return this.#actions
   }
 
 
@@ -36,8 +45,8 @@ export class Entity {
     if (!this.game.me) {
       throw new GameError("No player is currently signed in")
     }
-    if (!this.game.me.personal_stash.includes(this)) {
-      throw new GameError(`Entity ${this.data.kind} is not in the personal stash of player ${this.game.me.data.name}`)
+    if (action.entity.data.owner !== this.game.me.data.id) {
+      throw new GameError(`${this.game.me.data.name} does not own this ${this.data.kind}.`)
     }
     if (this.game.me !== this.game.current_player) {
       throw new GameError(`It is not ${this.game.me.data.name}'s turn.`)

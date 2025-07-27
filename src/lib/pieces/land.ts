@@ -1,19 +1,20 @@
-import { Place } from '$lib/action'
+import { Place } from "$lib/base_actions"
 import type { EntityData } from '$lib/data'
 import { Entity, Layer } from '$lib/entity.svelte'
+import type { EntityList } from "$lib/entity_list.svelte"
 import { RuleViolation } from '$lib/errors'
 import type { Game } from '$lib/game.svelte'
 import type { Tile } from '$lib/tile.svelte'
 
 
 export class Land extends Entity {
-  constructor(data: EntityData, game: Game | null = null) {
-    super(data, game)
+  constructor(data: EntityData, location: EntityList, game: Game | null = null) {
+    super(data, location, game)
     this.img_path = 'shared/Land.png'
     this.layer = Layer.LAND
   }
 
-  actions_types = [
+  action_types = [
     class PlaceLand extends Place {
       check(target: Tile, current_game: Game, new_game: Game) {
         super.check(target, current_game, new_game)

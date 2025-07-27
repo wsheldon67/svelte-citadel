@@ -1,7 +1,8 @@
 import type { Coordinate } from "./coordinate.svelte"
 import type { BoardData, CoordinateData } from "./data"
-import { Layer } from "./entity.svelte"
+import { Entity, Layer } from "./entity.svelte"
 import { EntityList } from "./entity_list.svelte"
+import { GameError } from "./errors"
 import type { Game } from "./game.svelte"
 import { create_water_tile, Tile } from "./tile.svelte"
 
@@ -123,5 +124,39 @@ export class Board {
     const first_citadel = citadels[0]
     const connected_tiles = this.get_connected_tiles(first_citadel)
     return citadels.every(citadel => connected_tiles.data.tiles[citadel.coordinate_data] !== undefined)
+  }
+
+  find_tile_with_entity(entity: Entity): Tile | null {
+    for (const tile of this.tiles) {
+      if (tile.includes(entity)) {
+        return tile
+      }
+    }
+    return null
+  }
+
+  remove_entity(entity: Entity): void {
+    if (!(entity.location instanceof Tile)) {
+      throw new GameError(`Entity ${entity.data.kind} is not on a tile.`)
+    }
+    this.game!.data.board.tiles[entity.location.coordinate_data].entities = entity.location.data.entities.filter(e => e.id !== entity.data.id)
+  }
+
+
+  add_entity(entity: Entity, to: Tile): void {
+    if (!this.game) throw new Error("Game is not set")
+    if (!this.game.data.board.tiles[to.coordinate_data]) {
+      this.game.data.board.tiles[to.coordinate_data] = { entities: [], name: to.coordinate_data }
+    }
+    this.game.data.board.tiles[to.coordinate_data].entities.push(entity.data)
+  }
+
+
+  move_entity(entity: Entity, to: Tile): void {
+    if (!(entity.location instanceof Tile)) {
+      throw new GameError(`Entity ${entity.data.kind} is not on a tile.`)
+    }
+    this.remove_entity(entity)
+    this.add_entity(entity, to)
   }
 }
