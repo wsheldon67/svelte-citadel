@@ -45,9 +45,6 @@ export class Entity {
     if (!this.game.me) {
       throw new GameError("No player is currently signed in")
     }
-    if (action.entity.data.owner !== this.game.me.data.id) {
-      throw new GameError(`${this.game.me.data.name} does not own this ${this.data.kind}.`)
-    }
     if (this.game.me !== this.game.current_player) {
       throw new GameError(`It is not ${this.game.me.data.name}'s turn.`)
     }

@@ -52,6 +52,7 @@
   <PlayerUi player={game.me}
     {selected_personal_stash}
     on_personal_stash_click={entity => selected = selected ? null : entity}
+    is_current_player={game.me === game.current_player}
   />
 {:else}
   <p>You are not logged into this game.</p>
