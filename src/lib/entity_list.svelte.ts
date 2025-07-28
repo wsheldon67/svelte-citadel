@@ -4,7 +4,6 @@ import type { Game } from "./game.svelte"
 import type { Player } from "./player.svelte"
 
 export class EntityList {
-  // data: EntityListData = $state({name: 'not initialized', entities: []})
   entities: Entity[] = $derived.by(() => {
     return this.data.entities.map(entity_data => new this.entity_types[entity_data.kind](entity_data, this, this.game))
   })
@@ -19,6 +18,15 @@ export class EntityList {
   constructor(public data:EntityListData, public entity_types:{[entity_name: string]: typeof Entity}, public game:Game|null=null) {
     this.game = game
     this.entity_types = entity_types
+  }
+
+  static from_entities(entity_data: {entities: Entity[], name: string}, entity_types:{[entity_name: string]: typeof Entity}, game: Game | null = null): EntityList {
+    const new_entity_list = new EntityList({
+      entities: entity_data.entities.map(entity => entity.data),
+      name: entity_data.name
+    }, entity_types, game)
+    new_entity_list.entities = entity_data.entities
+    return new_entity_list
   }
 
   get length(): number {
@@ -68,6 +76,14 @@ export class EntityList {
 
   has_entity_owned_by(player:Player|string): boolean {
     return this.get_entity_owned_by(player) !== null
+  }
+
+  get_entities_owned_by(player:Player|string): EntityList {
+    if (typeof player !== 'string') {
+      player = player.data.id
+    }
+    const entities = this.entities.filter(entity => entity.data.owner === player)
+    return EntityList.from_entities({entities, name: `Entities owned by ${player}`}, this.entity_types, this.game)
   }
 
 }

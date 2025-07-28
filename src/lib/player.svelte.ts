@@ -2,6 +2,7 @@ import { type PlayerData } from "./data"
 import type { Entity } from "./entity.svelte"
 import { EntityList } from "./entity_list.svelte"
 import type { Game } from "./game.svelte"
+import { Citadel } from "./pieces/citadel"
 
 export type PlayerConfig = {
   name: string
@@ -33,9 +34,9 @@ export class Player {
     if (!this.game) {
       throw new Error("Game is not set for this player")
     }
-    const entities = this.game.data.community_pool.entities.filter(e => e.created_by === this.data.id)
+    const entities = this.game.community_pool.entities.filter(e => e.data.created_by === this.data.id)
 
-    return new EntityList({
+    return EntityList.from_entities({
       name: `${this.data.name}'s Community Pieces`,
       entities
     }, this.game.entity_types, this.game)
@@ -57,6 +58,15 @@ export class Player {
 
   get is_done_choosing_pieces(): boolean {
     return this.is_done_choosing_personal_pieces && this.is_done_choosing_community_pieces
+  }
+
+  get citadels(): EntityList {
+    if (!this.game) {
+      throw new Error("Game is not set for this player")
+    }
+    return this.game.board
+      .get_entities_by_kind(Citadel)
+      .get_entities_owned_by(this)
   }
 
 }

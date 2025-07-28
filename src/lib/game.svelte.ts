@@ -43,6 +43,13 @@ export class Game {
   game_code: string | null = $state(null)
   current_user: User | null = $state(null)
 
+  entity_types = {
+    'Land': Land,
+    'Citadel': Citadel,
+    'Water': Water,
+    'Builder': Builder
+  }
+
 
   constructor(data: GameData) {
     this.data = data
@@ -66,6 +73,10 @@ export class Game {
   )
 
   board: Board = $derived(new Board(this.data.board, this))
+
+  community_pool: EntityList = $derived(
+    new EntityList(this.data.community_pool, this.entity_types, this)
+  )
 
   current_player: Player = $derived(
     this.players[this.data.turn % this.players.length]
@@ -114,12 +125,7 @@ export class Game {
   }
 
 
-  entity_types = {
-    'Land': Land,
-    'Citadel': Citadel,
-    'Water': Water,
-    'Builder': Builder
-  }
+
 
 
   place_entity(entity: Entity, tile: Tile): void {

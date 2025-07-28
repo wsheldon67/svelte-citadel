@@ -18,6 +18,12 @@ export class Place extends Action {
     if (this.entity.location instanceof Tile) {
       throw new RuleViolation(`Entity ${this.entity.data.kind} is already on the board at ${this.entity.location.coordinate_data}.`)
     }
+    // Can only place tiles adjacent to a citadel owned by the player
+    const is_adjacent_to_citadel = current_game.me!.citadels.entities
+        .some(citadel => target.is_adjacent_to(citadel.location as Tile))
+    if (!is_adjacent_to_citadel) {
+      throw new RuleViolation(`Tile ${target.coordinate_data} is not adjacent to any of your citadels.`)
+    }
   }
 
   execute(target: Tile, game: Game): void {

@@ -47,14 +47,14 @@ export class Board {
   get_entities_at(locator: Layer|Coordinate): EntityList {
 
     if (typeof locator === "string") {
-      const entities = this.get_tile_at(locator).entities.map(entity => entity.data)
-      return new EntityList({entities, name: `Entities at ${locator}`}, this.game!.entity_types, this.game)
+      const entities = this.get_tile_at(locator).entities
+      return EntityList.from_entities({entities, name: `Entities at ${locator}`}, this.game!.entity_types, this.game)
 
     } else if (typeof locator === "number") {
     const entities = this.tiles
-      .map(tile => tile.get_entity_at_layer(locator)?.data)
-      .filter(entity => entity !== undefined)
-    return new EntityList({entities, name: `Entities at layer ${locator}`}, this.game!.entity_types, this.game)
+      .map(tile => tile.get_entity_at_layer(locator))
+      .filter(entity => entity !== null)
+    return EntityList.from_entities({entities, name: `Entities at layer ${locator}`}, this.game!.entity_types, this.game)
     
     } else {
       throw new Error(`Invalid locator type: Expected Coordinate or Layer, got '${typeof locator}'`)
@@ -113,10 +113,13 @@ export class Board {
       return connected_tiles
     }
 
-  get_entities_by_kind(kind: string): EntityList {
-    const entities = this.tiles.flatMap(tile => tile.entities.filter(entity => entity.data.kind === kind).map(entity => entity.data))
-    return new EntityList({entities, name: `Entities of kind ${kind}`}, this.game!.entity_types, this.game)
+  get_entities_by_kind(kind: string|typeof Entity): EntityList {
+    const kind_test = typeof kind === 'string' ? (entity: Entity) => entity.data.kind === kind : (entity: Entity) => entity instanceof kind
+    const entities = this.tiles.flatMap(tile => tile.entities.filter(kind_test))
+    return EntityList.from_entities({entities, name: `Entities of kind ${kind}`}, this.game!.entity_types, this.game)
   }
+  // TODO: The entities in the returned EntityList get the new EntityList as their location.
+  // The new EntityList is not truly a location, it's more of a view/collection.
 
   get citadels_are_connected(): boolean {
     const citadels = this.tiles.filter(tile => tile.has_entity_by_kind('Citadel'))

@@ -7,6 +7,8 @@
   import type { Entity } from '$lib/entity.svelte'
   import type { Tile } from '$lib/tile.svelte'
   import type { Action } from '$lib/action'
+  import { doc, increment, updateDoc } from 'firebase/firestore'
+  import { db } from '$lib/firebase'
 
   const { game }: { game: Game } = $props()
   let selected:Entity|null = $state(null)
@@ -30,6 +32,9 @@
     if (actions.length == 1) {
       actions[0].execute(tile, game)
       game.update_game()
+      // Weird timing thing. To my understanding:
+      // When the parent component updates the `game` prop, this component loses its `selected` state.
+      setTimeout(() => { selected = null }, 0)
       return
     }
     floating_action_menu = {tile, actions}
@@ -39,13 +44,22 @@
     if (floating_action_menu) {
       action.execute(floating_action_menu.tile, game)
       floating_action_menu = null
+      game.update_game()
+      setTimeout(() => { selected = null }, 0)
     }
+  }
+
+  function advance_turn() {
+    updateDoc(doc(db, 'games', game.game_code!), {
+      turn: increment(1)
+    })
   }
 
 </script>
 {#if debug()}
   {selected?.actions.map(action => action.action_name)}
   <ObjectViewer object={highlighted} name="Highlighted Tiles" />
+  <button onclick={advance_turn}>Advance Turn</button>
 {/if}
 
 {#if game.me}
