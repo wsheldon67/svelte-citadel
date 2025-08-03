@@ -1,20 +1,21 @@
-import { Board } from "./board.svelte"
-import { Coordinate } from "./coordinate.svelte"
+import { Board } from "./board"
+import { Coordinate } from "./coordinate"
 import { generate_code } from "./util"
-import { EntityList } from "./entity_list.svelte"
+import { EntityList } from "./entity_list"
 import { GameError } from "./errors"
-import type { Game } from "./game.svelte"
+import type { Game } from "./game"
 import type { CoordinateData, EntityListData } from "./data"
 
 
 
 export class Tile extends EntityList {
-  // coordinate_data: CoordinateData = $state('0,0')
-
-  coordinate: Coordinate = $derived.by(() => new Coordinate(this.coordinate_data))
 
   constructor(data: EntityListData, public coordinate_data:CoordinateData, game:Game|null = null) {
     super(data, game!.entity_types, game)
+  }
+
+  get coordinate(): Coordinate {
+    return new Coordinate(this.coordinate_data)
   }
 
   get x(): number {return this.coordinate.x}

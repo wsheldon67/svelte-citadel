@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { Tile } from "./tile.svelte";
-  import { Layer } from "./entity.svelte";
+  import { Tile } from "./tile";
+  import { Layer } from "./entity";
   import { iter_enum_values } from "./util";
   import EntityUi from "./EntityUI.svelte";
     import { debug } from "./util.svelte";

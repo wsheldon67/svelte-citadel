@@ -1,5 +1,5 @@
 <script lang='ts'>
-  import { Entity } from '$lib/entity.svelte';
+  import { Entity } from '$lib/entity';
     import { get_img_url } from './util';
 
   const {

@@ -1,6 +1,6 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Game, blank_config, blank_game_data } from './game.svelte';
+import { Game, blank_config, blank_game_data } from './game';
 import type { PlayerData } from './data';
 import { GamePhase } from './data';
 

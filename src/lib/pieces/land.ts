@@ -1,10 +1,10 @@
 import { Place } from "$lib/base_actions"
 import type { EntityData } from '$lib/data'
-import { Entity, Layer } from '$lib/entity.svelte'
-import type { EntityList } from "$lib/entity_list.svelte"
+import { Entity, Layer } from '$lib/entity'
+import type { EntityList } from "$lib/entity_list"
 import { RuleViolation } from '$lib/errors'
-import type { Game } from '$lib/game.svelte'
-import type { Tile } from '$lib/tile.svelte'
+import type { Game } from '$lib/game'
+import type { Tile } from '$lib/tile'
 
 
 export class Land extends Entity {

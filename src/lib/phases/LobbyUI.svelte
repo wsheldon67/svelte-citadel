@@ -1,6 +1,6 @@
 <script lang="ts">
   import { doc, updateDoc } from "firebase/firestore"
-  import type { Game } from "../game.svelte"
+  import type { Game } from "../game"
   import { db } from "../firebase"
   import { GamePhase } from "../data"
 

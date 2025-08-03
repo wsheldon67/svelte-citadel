@@ -1,10 +1,10 @@
 <script lang="ts">
   import { GamePhase } from "$lib/data"
-  import type { Entity } from "$lib/entity.svelte"
+  import type { Entity } from "$lib/entity"
   import EntitySelector from "$lib/EntitySelector.svelte"
   import EntityUi from "$lib/EntityUI.svelte"
   import { db } from "$lib/firebase"
-  import type { Game } from "$lib/game.svelte"
+  import type { Game } from "$lib/game"
   import PlayerUI from "$lib/PlayerUI.svelte"
   import { generate_code } from "$lib/util"
   import { arrayUnion, doc, updateDoc } from "firebase/firestore"

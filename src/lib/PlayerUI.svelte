@@ -1,7 +1,7 @@
 <script lang="ts">
-  import { Player } from '$lib/player.svelte'
+  import { Player } from '$lib/player'
   import EntityUI from '$lib/EntityUI.svelte'
-  import type { Entity } from './entity.svelte'
+  import type { Entity } from './entity'
 
   let {
     player,

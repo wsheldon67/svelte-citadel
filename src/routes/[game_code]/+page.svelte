@@ -3,7 +3,7 @@
   import Battle from '$lib/phases/Battle.svelte'
   import LandPlacement from '$lib/phases/LandPlacement.svelte'
   import ObjectViewer from '$lib/ObjectViewer.svelte'
-  import { Game, blank_config } from '$lib/game.svelte'
+  import { Game, blank_config } from '$lib/game'
   import { debug } from '$lib/util.svelte'
   import { onMount } from 'svelte'
   import { GamePhase } from '$lib/data'

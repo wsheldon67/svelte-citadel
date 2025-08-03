@@ -1,8 +1,8 @@
 import type { EntityData } from '$lib/data'
-import { Entity, Layer } from '$lib/entity.svelte'
-import type { EntityList } from '$lib/entity_list.svelte'
-import type { Game } from '$lib/game.svelte'
-import type { Tile } from '../tile.svelte'
+import { Entity, Layer } from '$lib/entity'
+import type { EntityList } from '$lib/entity_list'
+import type { Game } from '$lib/game'
+import type { Tile } from '../tile'
 
 export class Water extends Entity {
   constructor(data: EntityData, location: Tile) {

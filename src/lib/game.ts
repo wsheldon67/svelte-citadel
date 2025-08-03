@@ -1,18 +1,18 @@
 import { GamePhase, type GameData, type PlayerData } from "./data"
-import { arrayRemove, arrayUnion, doc, onSnapshot, setDoc, updateDoc, writeBatch, type Unsubscribe } from "firebase/firestore"
+import { arrayRemove, arrayUnion, doc, onSnapshot, setDoc, updateDoc, type Unsubscribe } from "firebase/firestore"
 import { db, auth } from "./firebase"
-import { Player } from './player.svelte'
-import { Board } from './board.svelte'
+import { Player } from './player'
+import { Board } from './board'
 import { onAuthStateChanged, type User } from "firebase/auth"
 import { AuthenticationError, GameError } from "./errors"
 import { generate_code } from "./util"
-import { EntityList } from "./entity_list.svelte"
+import { EntityList } from "./entity_list"
 import { Piece, Water } from "./pieces"
 import { Citadel } from './pieces/citadel'
 import { Land } from './pieces/land'
 import { Builder } from "./pieces/builder"
-import type { Entity } from "./entity.svelte"
-import type { Tile } from "./tile.svelte"
+import type { Entity } from "./entity"
+import type { Tile } from "./tile"
 
 export type GameConfig = {
   lands_per_player: number;
@@ -39,9 +39,10 @@ export const blank_game_data: GameData = {
 }
 
 export class Game {
-  data: GameData = $state(blank_game_data)
-  game_code: string | null = $state(null)
-  current_user: User | null = $state(null)
+  data: GameData = blank_game_data
+  game_code: string | null = null
+  current_user: User | null = null
+  ui_state: Record<string, any> = {}
 
   entity_types = {
     'Land': Land,
@@ -49,7 +50,6 @@ export class Game {
     'Water': Water,
     'Builder': Builder
   }
-
 
   constructor(data: GameData) {
     this.data = data
@@ -62,27 +62,33 @@ export class Game {
   }
 
 
-  players: Player[] = $derived(
-    Object.values(this.data.players)
+  get players(): Player[] {
+    return Object.values(this.data.players)
       .map(playerData => new Player(playerData, this.entity_types, this))
       .sort((a, b) => a.data.player_order - b.data.player_order)
-  )
+  }
 
-  me: Player | null  = $derived(
-    this.current_user && this.players ? this.players.find(player => player.data.id === this.current_user?.uid) || null : null
-  )
+  get board(): Board {
+    return new Board(this.data.board, this)
+  }
 
-  board: Board = $derived(new Board(this.data.board, this))
+  get community_pool(): EntityList {
+    return new EntityList(this.data.community_pool, this.entity_types, this)
+  }
 
-  community_pool: EntityList = $derived(
-    new EntityList(this.data.community_pool, this.entity_types, this)
-  )
+  get graveyard(): EntityList {
+    return new EntityList(this.data.graveyard, this.entity_types, this)
+  }
 
-  current_player: Player = $derived(
-    this.players[this.data.turn % this.players.length]
-  )
+  get current_player(): Player {
+    return this.players[this.data.turn % this.players.length]
+  }
 
-  all_personal_stashes: EntityList = $derived.by(() => {
+  get me(): Player | null {
+    return this.players.find(player => player.data.id === this.current_user?.uid) || null
+  }
+
+  get all_personal_stashes(): EntityList {
     const entities = []
     for (const player of this.players) {
       entities.push(...player.personal_stash.entities.map(entity => entity.data))
@@ -90,7 +96,7 @@ export class Game {
     return new EntityList({
       entities, name: "All Personal Stashes"
     }, this.entity_types, this)
-  })
+  }
 
 
   static fromConfig(config: GameConfig): Game {
@@ -176,12 +182,44 @@ export class Game {
     setDoc(doc(db, "games", this.game_code), this.data)
   }
 
+  get all_entities(): Entity[] {
+    const entities: Entity[] = []
+    for (const tile of this.board.tiles) {
+      entities.push(...tile.entities)
+    }
+    entities.push(...this.community_pool.entities)
+    for (const player of this.players) {
+      entities.push(...player.personal_stash.entities)
+    }
+    entities.push(...this.graveyard.entities)
+    return entities
+  }
+
   copy(): Game {
     return new Game(JSON.parse(JSON.stringify(this.data)))
   }
 
   add_to_graveyard(entity: Entity): void {
     this.data.graveyard.entities.push(entity.data)
+  }
+
+  get_entity_by_id(id: string): Entity | null {
+    for (const tile of this.board.tiles) {
+      const entity = tile.entities.find(e => e.data.id === id)
+      if (entity) return entity
+    }
+
+    const cp_entity = this.community_pool.entities.find(e => e.data.id === id)
+    if (cp_entity) return cp_entity
+
+    for (const player of this.players) {
+      const entity = player.personal_stash.entities.find(e => e.data.id === id)
+      if (entity) return entity
+    }
+
+    const gv_entity = this.graveyard.entities.find(e => e.data.id === id)
+    if (gv_entity) return gv_entity
+    return null
   }
 
 }

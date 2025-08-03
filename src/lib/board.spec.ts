@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest"
 
-import { Board } from "./board.svelte"
+import { Board } from "./board"
 import type { EntityData } from "./data"
 
 function create_entity_data(kind: string, id: string): EntityData {

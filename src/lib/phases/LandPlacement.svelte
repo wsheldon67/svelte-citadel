@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { Game } from '$lib/game.svelte'
+  import { Game } from '$lib/game'
   import PlayerUI from '../PlayerUI.svelte'
   import BoardUI from '../BoardUI.svelte'
-  import type { Entity } from '../entity.svelte'
-  import type { Tile } from '../tile.svelte'
+  import type { Entity } from '../entity'
+  import type { Tile } from '../tile'
   import { RuleViolation } from '../errors'
   import { doc, updateDoc } from 'firebase/firestore'
   import { db } from '../firebase'

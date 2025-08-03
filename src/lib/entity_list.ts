@@ -1,13 +1,10 @@
-import type { Entity, Layer } from "./entity.svelte"
+import type { Entity, Layer } from "./entity"
 import type { EntityListData } from "./data"
-import type { Game } from "./game.svelte"
-import type { Player } from "./player.svelte"
+import type { Game } from "./game"
+import type { Player } from "./player"
 
 export class EntityList {
-  entities: Entity[] = $derived.by(() => {
-    return this.data.entities.map(entity_data => new this.entity_types[entity_data.kind](entity_data, this, this.game))
-  })
-
+  #entities: Entity[]|null = null
 
   /**
    * A collection of entities.
@@ -18,6 +15,15 @@ export class EntityList {
   constructor(public data:EntityListData, public entity_types:{[entity_name: string]: typeof Entity}, public game:Game|null=null) {
     this.game = game
     this.entity_types = entity_types
+  }
+
+  get entities(): Entity[] {
+    if (this.#entities) return this.#entities
+    return this.data.entities.map(entity_data => new this.entity_types[entity_data.kind](entity_data, this, this.game))
+  }
+  set entities(entities: Entity[]) {
+    this.#entities = entities
+    this.data.entities = entities.map(entity => entity.data)
   }
 
   static from_entities(entity_data: {entities: Entity[], name: string}, entity_types:{[entity_name: string]: typeof Entity}, game: Game | null = null): EntityList {

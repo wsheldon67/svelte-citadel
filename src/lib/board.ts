@@ -1,29 +1,27 @@
-import type { Coordinate } from "./coordinate.svelte"
+import type { Coordinate } from "./coordinate"
 import type { BoardData, CoordinateData } from "./data"
-import { Entity, Layer } from "./entity.svelte"
-import { EntityList } from "./entity_list.svelte"
+import { Entity, Layer } from "./entity"
+import { EntityList } from "./entity_list"
 import { GameError } from "./errors"
-import type { Game } from "./game.svelte"
-import { create_water_tile, Tile } from "./tile.svelte"
+import type { Game } from "./game"
+import { create_water_tile, Tile } from "./tile"
 
 export class Board {
   // data: BoardData = $state({name: 'not initialized', tiles: {}})
-  tiles: Tile[]
 
   constructor(public data:BoardData, public game:Game|null=null) {
     this.game = game
-    this.tiles = $derived(
-      Object.entries(this.data.tiles).map(([coordinate_data, tile_data]) => {
-        return new Tile(tile_data, coordinate_data as CoordinateData, this.game)
-      })
-  )
   }
 
 
+  get tiles(): Tile[] {
+    return Object.entries(this.data.tiles).map(([coordinate_data, tile_data]) => {
+      return new Tile(tile_data, coordinate_data as CoordinateData, this.game)
+    })
+  }
 
-  extents: {
-    x_min: number, x_max: number, y_min: number, y_max: number
-  } = $derived.by(() => {
+
+  get extents(): { x_min: number, x_max: number, y_min: number, y_max: number } {
     const keys = Object.keys(this.data.tiles) as CoordinateData[]
     const coordinates = keys.map(coordinate => coordinate.split(',').map(Number))
     const x_max = Math.max(...coordinates.map(coord => coord[0]), 0)
@@ -31,7 +29,7 @@ export class Board {
     const x_min = Math.min(...coordinates.map(coord => coord[0]), 0)
     const y_min = Math.min(...coordinates.map(coord => coord[1]), 0)
     return { x_min, x_max, y_min, y_max }
-  })
+  }
 
 
 
@@ -118,8 +116,6 @@ export class Board {
     const entities = this.tiles.flatMap(tile => tile.entities.filter(kind_test))
     return EntityList.from_entities({entities, name: `Entities of kind ${kind}`}, this.game!.entity_types, this.game)
   }
-  // TODO: The entities in the returned EntityList get the new EntityList as their location.
-  // The new EntityList is not truly a location, it's more of a view/collection.
 
   get citadels_are_connected(): boolean {
     const citadels = this.tiles.filter(tile => tile.has_entity_by_kind('Citadel'))
@@ -161,5 +157,9 @@ export class Board {
     }
     this.remove_entity(entity)
     this.add_entity(entity, to)
+  }
+
+  get all_entities(): Entity[] {
+    return this.tiles.flatMap(tile => tile.entities)
   }
 }

@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from '$app/navigation'
   import { db, auth } from '$lib/firebase'
-  import { blank_config, Game, type GameConfig } from '$lib/game.svelte'
+  import { blank_config, Game, type GameConfig } from '$lib/game'
   import { doc, setDoc } from 'firebase/firestore'
   import { generate_code } from '$lib/util'
   import { onMount } from 'svelte'

@@ -1,11 +1,11 @@
 <script lang="ts">
-  import { Board } from '$lib/board.svelte'
+  import { Board } from '$lib/board'
   import TileUi from './TileUI.svelte'
   import { iter_range } from './util'
-  import { Tile } from './tile.svelte'
+  import { Tile } from './tile'
   import ObjectViewer from './ObjectViewer.svelte'
   import { debug } from './util.svelte'
-  import type { Entity } from './entity.svelte'
+  import type { Entity } from './entity'
 
   let {
     board,

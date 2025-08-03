@@ -1,9 +1,9 @@
 import { Action } from "./action"
 import { GameError, RuleViolation } from "./errors"
 import type { EntityData } from "./data"
-import type { Game } from "./game.svelte"
-import type { Tile } from "./tile.svelte"
-import type { EntityList } from "./entity_list.svelte"
+import type { Game } from "./game"
+import type { Tile } from "./tile"
+import type { EntityList } from "./entity_list"
 
 
 export enum Layer {WATER, LAND, WALKING, FLYING}
@@ -16,7 +16,7 @@ export class Entity {
   #actions: Action[] | null = null
   location: EntityList
 
-  action_types: typeof Action[] = []
+  action_types: (new (...args: any[]) => Action)[] = []
 
   constructor(data: EntityData, location: EntityList, game: Game | null = null) {
     this.data = data
@@ -32,6 +32,29 @@ export class Entity {
     return this.#actions
   }
 
+  get ui_state(): Record<string, any> {
+    if (!this.game) {
+      return {}
+    }
+    return this.game.ui_state[this.data.id] || {}
+  }
+
+  set ui_state(state: Record<string, any>) {
+    if (!this.game) {
+      throw new GameError(`Cannot set ui_state for an Entity (${this.data.kind}) that is not attached to a game.`)
+    }
+    this.game.ui_state[this.data.id] = state
+  }
+
+  set_ui_state(key: string, value: any): void {
+    if (!this.game) {
+      throw new GameError(`Cannot set ui_state for an Entity (${this.data.kind}) that is not attached to a game.`)
+    }
+    if (!this.game.ui_state[this.data.id]) {
+      this.game.ui_state[this.data.id] = {}
+    }
+    this.game.ui_state[this.data.id][key] = value
+  }
 
   check_action(action_name: string, target: Tile): Action {
     // Throw general game errors applicable to all actions
@@ -101,6 +124,13 @@ export class Entity {
         throw e // rethrow unexpected errors
       }
     })
+  }
+
+  move_to(tile: Tile): void {
+    if (!this.game) {
+      throw new GameError(`Cannot move an Entity (${this.data.kind}) that is not attached to a game.`)
+    }
+    this.game.board.move_entity(this, tile)
   }
 
 }

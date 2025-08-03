@@ -1,9 +1,9 @@
 import { Action } from "./action"
 import { RuleViolation } from "./errors"
-import type { Game } from "./game.svelte"
+import type { Game } from "./game"
 import { Piece } from "./pieces"
 import { Citadel } from "./pieces/citadel"
-import { Tile } from "./tile.svelte"
+import { Tile } from "./tile"
 
 
 export class Place extends Action {
@@ -17,12 +17,6 @@ export class Place extends Action {
     // Cannot place if the entity is already on the board
     if (this.entity.location instanceof Tile) {
       throw new RuleViolation(`Entity ${this.entity.data.kind} is already on the board at ${this.entity.location.coordinate_data}.`)
-    }
-    // Can only place tiles adjacent to a citadel owned by the player
-    const is_adjacent_to_citadel = current_game.me!.citadels.entities
-        .some(citadel => target.is_adjacent_to(citadel.location as Tile))
-    if (!is_adjacent_to_citadel) {
-      throw new RuleViolation(`Tile ${target.coordinate_data} is not adjacent to any of your citadels.`)
     }
   }
 
@@ -42,6 +36,19 @@ export class Place extends Action {
 
 }
 
+export class PlacePiece extends Place {
+  action_name: string = 'place'
+  check(target: Tile, current_game: Game, new_game: Game): void {
+    super.check(target, current_game, new_game)
+    // Can only place tiles adjacent to a citadel owned by the player
+    const is_adjacent_to_citadel = current_game.me!.citadels.entities
+        .some(citadel => target.is_adjacent_to(citadel.location as Tile))
+    if (!is_adjacent_to_citadel) {
+      throw new RuleViolation(`Tile ${target.coordinate_data} is not adjacent to any of your citadels.`)
+    }
+  }
+
+}
 
 
 export class Capture extends Action {

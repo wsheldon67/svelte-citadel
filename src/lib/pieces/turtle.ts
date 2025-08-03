@@ -1,4 +1,4 @@
-import type { Tile } from '$lib/tile.svelte'
+import type { Tile } from '$lib/tile'
 import { Piece } from '.'
 
 

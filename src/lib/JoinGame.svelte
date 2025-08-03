@@ -2,11 +2,11 @@
     import { goto } from "$app/navigation";
     import { arrayUnion, doc, getDoc, updateDoc } from "firebase/firestore";
     import { auth, db } from "./firebase";
-    import { Player } from "./player.svelte";
+    import { Player } from "./player";
     import { GamePhase, type GameData } from "./data";
     import { onMount } from "svelte";
     import { generate_name } from "./name_generator";
-    import { Game } from "./game.svelte";
+    import { Game } from "./game";
 
   let game_code = $state('')
   let player_name = $state('')

@@ -1,7 +1,7 @@
 import { GameError } from "./errors"
-import type { Game } from "./game.svelte"
-import type { Tile } from "./tile.svelte"
-import type { Entity } from "./entity.svelte"
+import type { Game } from "./game"
+import type { Tile } from "./tile"
+import type { Entity } from "./entity"
 
 
 export class Action {
@@ -21,9 +21,13 @@ export class Action {
 
   simulate(target: Tile): Game {
     const new_game = this.game.copy()
-    new_game.current_user = this.game.current_user
+    const equivalent_entity = new_game.get_entity_by_id(this.entity.data.id)
+    if (!equivalent_entity) {
+      throw new GameError(`Entity with id ${this.entity.data.id} not found in the simulated game.`)
+    }
+    const action = equivalent_entity.get_action(this.action_name)
     try {
-      this.execute(target, new_game)
+      action.execute(target, new_game)
     } catch (e) {
       if (!(e instanceof GameError)) throw e
     }

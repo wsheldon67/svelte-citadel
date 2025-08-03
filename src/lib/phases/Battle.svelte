@@ -1,11 +1,11 @@
 <script lang="ts">
   import BoardUi from '$lib/BoardUI.svelte'
-  import { Game } from '$lib/game.svelte'
+  import { Game } from '$lib/game'
   import PlayerUi from '$lib/PlayerUI.svelte'
   import { debug } from '$lib/util.svelte'
   import ObjectViewer from '../ObjectViewer.svelte'
-  import type { Entity } from '$lib/entity.svelte'
-  import type { Tile } from '$lib/tile.svelte'
+  import type { Entity } from '$lib/entity'
+  import type { Tile } from '$lib/tile'
   import type { Action } from '$lib/action'
   import { doc, increment, updateDoc } from 'firebase/firestore'
   import { db } from '$lib/firebase'
@@ -22,6 +22,8 @@
   let selected_personal_stash = $derived(selected && game.me?.personal_stash.includes(selected) ? selected : null)
 
   let highlighted = $derived(selected ? game.board.tiles.filter(tile => {
+    // TODO: I believe that svelte is complaining when the state on the *copied* game is changed
+    // during this computation.
     return selected!.has_action_on_tile(tile.x, tile.y)
   }).map(tile => [tile.x, tile.y]) as [number, number][] : [])
 

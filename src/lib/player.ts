@@ -1,7 +1,7 @@
 import { type PlayerData } from "./data"
-import type { Entity } from "./entity.svelte"
-import { EntityList } from "./entity_list.svelte"
-import type { Game } from "./game.svelte"
+import type { Entity } from "./entity"
+import { EntityList } from "./entity_list"
+import type { Game } from "./game"
 import { Citadel } from "./pieces/citadel"
 
 export type PlayerConfig = {
@@ -12,17 +12,16 @@ export type PlayerConfig = {
 }
 
 export class Player {
-  personal_stash: EntityList
 
-  constructor (public data:PlayerData, entity_types: {[entity_name: string]: typeof Entity}, public game: Game | null = null) {
-    this.data = data
-    this.game = game
-    this.personal_stash = $derived(
-      new EntityList({
-        name: `${this.data.name}'s Personal Stash`,
-        entities: this.data.personal_stash.entities
-      }, entity_types, this.game)
-    )
+  constructor (public data:PlayerData, public entity_types: {[entity_name: string]: typeof Entity}, public game: Game | null = null) {
+
+  }
+
+  get personal_stash(): EntityList {
+    return new EntityList({
+      name: `${this.data.name}'s Personal Stash`,
+      entities: this.data.personal_stash.entities
+    }, this.entity_types, this.game)
   }
 
   remove_from_personal_stash(entity: Entity) {
