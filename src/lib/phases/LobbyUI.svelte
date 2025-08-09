@@ -5,21 +5,23 @@
   import { GamePhase } from "../data"
 
   let {
-    game
+    game,
+    game_code
   }: {
-    game: Game
+    game: Game,
+    game_code: string
   } = $props()
 
   function start_game(event: MouseEvent) {
     event.preventDefault()
-    updateDoc(doc(db, 'games', game.game_code!), {
+    updateDoc(doc(db, 'games', game_code), {
       phase: GamePhase.LAND_PLACEMENT
     })
   }
 
 </script>
 <h1>Lobby</h1>
-<p class='game_code'>Game Code: {game.game_code}</p>
+<p class='game_code'>Game Code: {game_code}</p>
 <h2>Players</h2>
 <ul>
   {#each game.players as player}

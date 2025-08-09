@@ -14,13 +14,15 @@
 
   onMount(() => game.subscribe(page.params.game_code))
 
+  
+
 </script>
 {#if debug()}
   <ObjectViewer object={game.data} name="Game Data" />
 {/if}
 
 {#if game.data.phase === GamePhase.LOBBY}
-  <LobbyUI {game} />
+  <LobbyUI {game} game_code={page.params.game_code} />
 {:else if game.data.phase === GamePhase.LAND_PLACEMENT}
   <LandPlacement {game} />
 {:else if game.data.phase === GamePhase.PIECE_SELECTION}
