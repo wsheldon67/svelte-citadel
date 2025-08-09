@@ -1,11 +1,11 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
-import { ActionRegistry } from '../engine/ActionRegistry.js';
-import { GameFactory } from '../engine/GameFactory.js';
-import { GameStateDerivation } from '../engine/ModularGameStateDerivation.js';
-import '../engine/CoreActionHandlers.js'; // Ensure core actions are registered
-import type { BaseGameAction } from '../engine/BaseActions.js';
-import type { GameState } from '../engine/GameState.js';
+import { ActionRegistry } from '../engine/ActionRegistry';
+import { GameFactory } from '../engine/GameFactory';
+import { GameStateDerivation } from '../engine/ModularGameStateDerivation';
+import '../engine/CoreActionHandlers'; // Ensure core actions are registered
+import type { BaseGameAction } from '../engine/BaseActions';
+import type { GameState } from '../engine/GameState';
 
 // Example custom piece action
 interface TestPieceAction extends BaseGameAction {
@@ -13,10 +13,14 @@ interface TestPieceAction extends BaseGameAction {
   testData: string;
 }
 
+import { CoreActionHandlers } from '../engine/CoreActionHandlers';
+
 describe('Modular Action System', () => {
   beforeEach(() => {
     // Clear registry for clean tests
     ActionRegistry.clear();
+    // Re-register core actions for each test
+    CoreActionHandlers.registerAll();
   });
 
   it('should allow registering custom actions', () => {
