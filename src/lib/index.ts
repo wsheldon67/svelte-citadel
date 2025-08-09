@@ -1,5 +1,9 @@
 // Core game engine exports
 export * from './game/board/Coordinate';
+export * from './game/board/Board';
+export * from './game/board/PathfindingUtils';
+export * from './game/board/WaterAreaUtils';
+export * from './game/board/TurtleUtils';
 export * from './game/engine/GameState';
 
 // Modular action system

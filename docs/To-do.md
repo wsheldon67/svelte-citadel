@@ -14,20 +14,24 @@ This file tracks the progress of the Citadel game implementation, based on the I
 - [x] Rollback mechanism for simulations
 
 ### 1.2 Coordinate System & Board
-- [ ] 2D coordinate system with efficient storage
-- [ ] Infinite board simulation with sparse representation
-- [ ] Adjacency and pathfinding utilities
-- [ ] Distance calculations and area queries
-- [ ] Land tile placement and removal
-- [ ] Water area calculations
-- [ ] Citadel connectivity validation
-- [ ] Efficient spatial queries for piece interactions
+- [x] 2D coordinate system with efficient storage
+- [x] Infinite board simulation with sparse representation
+- [x] Adjacency and pathfinding utilities
+- [x] Distance calculations and area queries
+- [x] Land tile placement and removal (validation logic)
+- [x] Water area calculations
+- [x] Citadel connectivity validation
+- [x] Efficient spatial queries for piece interactions
+- [x] **Layered board architecture (Water -> Foundation -> Pieces)**
+- [x] **Full turtle support as foundation layer**
 
 ### 1.3 Piece Architecture
 - [x] Extensible piece system with modular action registration
 - [x] LLM and beginner-friendly API design
-- [ ] Action capability framework (`CanMove`, `CanCapture`, `CanPlace`, etc.)
-- [ ] Piece state management (position, owner, status)
+- [x] Action capability framework (`CanMove`, `CanCapture`, `CanPlace`, etc.)
+- [x] **Turtle-specific state management and mechanics**
+- [x] **Piece carrying system (turtle backs)**
+- [ ] Complete piece state management (position, owner, status)
 
 ## Phase 2: Piece Implementation
 
