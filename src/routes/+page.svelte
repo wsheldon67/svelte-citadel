@@ -7,9 +7,12 @@
   import { onMount } from 'svelte'
   import { generate_name } from '$lib/name_generator'
   import JoinGame from '$lib/JoinGame.svelte'
+  import { debug } from '$lib/util.svelte'
+    import { onAuthStateChanged, type User } from 'firebase/auth';
 
   let game_code = $state('')
   let player_name = $state('')
+  let current_user:User|null = $state(null)
 
   let game_config:GameConfig = $state(blank_config)
 
@@ -33,11 +36,23 @@
   }
 
   onMount(() => {
-    player_name = auth.currentUser?.displayName || generate_name()
+    if (debug()) {
+      onAuthStateChanged(auth, (user) => {
+        current_user = user
+        if (user) {
+          player_name = user.displayName || generate_name()
+        }
+      })
+    }
   })
 
 </script>
 <h1>Welcome to Citadel</h1>
+{#if debug()}
+  {#if current_user}
+    <p>User ID: {current_user.uid}</p>  
+  {/if}
+{/if}
 
 <JoinGame />
 <form onsubmit={start_game}>
