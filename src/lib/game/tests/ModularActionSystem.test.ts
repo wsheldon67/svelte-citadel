@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+
 import { ActionRegistry } from '../engine/ActionRegistry.js';
 import { GameFactory } from '../engine/GameFactory.js';
 import { GameStateDerivation } from '../engine/ModularGameStateDerivation.js';
+import '../engine/CoreActionHandlers.js'; // Ensure core actions are registered
 import type { BaseGameAction } from '../engine/BaseActions.js';
 import type { GameState } from '../engine/GameState.js';
 
