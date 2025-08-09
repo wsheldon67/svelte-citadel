@@ -9,13 +9,13 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 **Priority: Critical**
 
 - **Game State Structure**
-  - Design immutable game state with event sourcing pattern
-  - Implement action history for undo/replay functionality
-  - Create state validation and integrity checks
+  - ✅ Immutable game state with event sourcing pattern (initial state + actions, derived state computed on-demand)
+  - ✅ Action history for undo/replay functionality
+  - ✅ State validation and integrity checks
 
 - **Core Data Types**
   ```typescript
-  // Key interfaces to implement
+  // Key interfaces implemented
   interface GameState {
     id: string;
     players: Player[];
@@ -36,10 +36,10 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
   ```
 
 - **Action System**
-  - Abstract `GameAction` base class
-  - Specific action types: `PlacePiece`, `MovePiece`, `CapturePiece`, `PlaceLand`, etc.
-  - Action validation and execution pipeline
-  - Rollback mechanism for simulations
+  - ✅ Modular action system: plugin/registry pattern, per-piece action registration (no centralized action union)
+  - ✅ Core and piece actions registered via ActionRegistry
+  - ✅ Action validation and execution pipeline
+  - ✅ Rollback mechanism for simulations
 
 ### 1.2 Coordinate System & Board
 **Priority: Critical**
@@ -60,13 +60,14 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 **Priority: Critical**
 
 - **Base Piece System**
-  - Abstract `Piece` base class with extensible action system
-  - LLM and beginner-friendly API design
+  - ✅ Extensible piece system with modular action registration
+  - ✅ LLM and beginner-friendly API design
   - Action capability framework (`CanMove`, `CanCapture`, `CanPlace`, etc.)
   - Piece state management (position, owner, status)
 
 - **Action Framework**
   ```typescript
+  // Modular action registration and validation handled via ActionRegistry and per-piece modules
   abstract class Piece {
     abstract getAvailableActions(gameState: GameState): PieceAction[];
     abstract validateAction(action: PieceAction, gameState: GameState): boolean;
@@ -95,7 +96,7 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 ### 2.3 Piece Testing Framework
 **Priority: High**
 
-- Comprehensive unit tests for each piece
+- ✅ Comprehensive unit tests for data structures and modular action system
 - Movement validation tests
 - Capture scenario tests
 - Edge case coverage (boundaries, special interactions)
@@ -106,8 +107,8 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 **Priority: Critical**
 
 - **Headless Game Simulation**
-  - Simulation without UI dependencies
-  - Action validity checking
+  - ✅ Simulation without UI dependencies (core engine is headless)
+  - ✅ Action validity checking
   - Infinite loop prevention for nested simulations
   - Performance optimization for real-time validation
 
@@ -234,16 +235,16 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 ### 7.3 Documentation & Developer Experience
 **Priority: Medium**
 
-- API documentation for piece creation
-- Developer guides for extending the game
+- ✅ API documentation for event sourcing and modular action system
+- ✅ Example piece implementation and guides
 - Code examples and tutorials
 
 ## Technical Architecture Decisions
 
 ### State Management
-- **Event Sourcing**: Game state derived from initial state + action history
-- **Immutability**: All state mutations through pure functions
-- **Separation of Concerns**: Game logic independent of UI framework
+- ✅ **Event Sourcing**: Game state derived from initial state + action history (implemented)
+- ✅ **Immutability**: All state mutations through pure functions
+- ✅ **Separation of Concerns**: Game logic independent of UI framework
 
 ### Performance Considerations
 - **Sparse Board Representation**: Only store occupied coordinates
@@ -252,10 +253,10 @@ Citadel is a strategic board game built with SvelteKit 5, TypeScript, and Fireba
 - **Simulation Limiting**: Prevent infinite recursion in nested simulations
 
 ### API Design Principles
-- **Beginner Friendly**: Intuitive method names and clear documentation
-- **LLM Compatible**: Predictable patterns and clear interfaces
-- **Extensible**: Easy to add new pieces and game modes
-- **Type Safe**: Full TypeScript coverage with strict typing
+- ✅ **Beginner Friendly**: Intuitive method names and clear documentation
+- ✅ **LLM Compatible**: Predictable patterns and clear interfaces
+- ✅ **Extensible**: Easy to add new pieces and game modes (via modular action system)
+- ✅ **Type Safe**: Full TypeScript coverage with strict typing
 
 ## File Structure Recommendations
 

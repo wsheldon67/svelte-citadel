@@ -50,20 +50,16 @@ const currentState = GameStateDerivation.deriveState(
 );
 ```
 
-## Action Processing
 
-Each action type has its own handler in `GameStateDerivation`:
+## Modular Action Processing
 
-- ✅ `join-game` → Add player to game
-- ✅ `start-game` → Move to land-placement phase  
-- ✅ `place-land` → Add land tile to board
-- ✅ `place-citadel` → Add citadel at position
-- ✅ `select-piece` → Add piece to stash/community pool
-- ✅ `place-piece` → Move piece from stash to board
-- ✅ `move-piece` → Update piece position
-- ✅ `capture-piece` → Move piece to graveyard
-- ✅ `end-turn` → Advance to next player
-- ✅ `concede` → End game with winner
+Each action type is now handled by a modular plugin system:
+
+- **Core actions** (join-game, start-game, etc.) are registered by the system.
+- **Piece actions** are registered by each piece module using the `ActionRegistry`.
+- The state derivation engine applies actions by looking up their handler in the registry, not by a hardcoded switch.
+
+This means new actions can be added by simply registering them, with no changes to the core system.
 
 ## Performance Considerations
 
@@ -129,14 +125,14 @@ console.log(`Players: ${currentState.players.length}`);
 
 ## Next Steps
 
-The event sourcing foundation is now solid. Ready for:
+With the event sourcing and modular action system in place, the architecture is ready for:
 
-1. **Piece Implementation** - Individual piece behavior and validation
+1. **Piece Implementation** - Each piece as an isolated module with its own actions
 2. **Firebase Integration** - Real-time action synchronization
 3. **UI Components** - Reactive components using derived state
 4. **Game Rules Engine** - Action validation and game logic
 
-The architecture now perfectly supports the technical requirements:
+This approach perfectly supports the technical requirements:
 - ✅ **Reviewable Games** - Complete action history
 - ✅ **Undo Functionality** - Replay to any point
 - ✅ **Simulation Engine** - Test actions without persistence
