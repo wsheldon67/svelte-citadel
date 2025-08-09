@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { BuilderPiece, BuilderActionFactory } from '../pieces/examples/BuilderPieceExample';
-import type { GameState } from '../engine/GameState';
-import type { Coordinate } from '../board/Coordinate';
+import { BuilderPiece, BuilderActionFactory } from './BuilderPieceExample';
+import type { GameState } from '../../engine/GameState';
+import type { Coordinate } from '../../board/Coordinate';
 
 // Helper to create a minimal GameState
 function createGameState(overrides: Partial<GameState> = {}): GameState {
