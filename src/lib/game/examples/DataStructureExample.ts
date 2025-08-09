@@ -1,6 +1,6 @@
-import type { GameDocument, GameState } from '../engine/GameState.js';
-import { GameFactory, ActionFactory, SerializationUtils } from '../engine/GameFactory.js';
-import { GameStateDerivation } from '../engine/GameStateDerivation.js';
+import type { GameDocument, GameState } from '../engine/GameState';
+import { GameFactory, ActionFactory, SerializationUtils } from '../engine/GameFactory';
+import { GameStateDerivation } from '../engine/GameStateDerivation';
 
 /**
  * Example usage of the game data structures
@@ -148,7 +148,7 @@ export function runCompleteExample() {
   };
 }
 
-// For testing in browser console or Node.js
+// For testing in browser console or Node
 if (typeof window !== 'undefined') {
   // Browser environment
   (window as any).CitadelDemo = {
@@ -158,7 +158,7 @@ if (typeof window !== 'undefined') {
     startLandPlacementExample
   };
 } else {
-  // Node.js environment
+  // Node environment
   console.log('Citadel Game Data Structures loaded successfully!');
   console.log('Run runCompleteExample() to see a demo');
 }

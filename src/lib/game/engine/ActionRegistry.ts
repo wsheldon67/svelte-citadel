@@ -1,4 +1,4 @@
-import type { BaseGameAction, GameAction } from './BaseActions.js';
+import type { BaseGameAction, GameAction } from './BaseActions';
 
 /**
  * Action handler function that applies an action to game state

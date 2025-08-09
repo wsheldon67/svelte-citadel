@@ -1,6 +1,6 @@
-import type { InitialGameState, GameState, Player, Land, Piece, Citadel } from './GameState.js';
-import type { GameAction } from './GameAction.js';
-import { IdUtils } from '../utils/GameUtils.js';
+import type { InitialGameState, GameState, Player, Land, Piece, Citadel } from './GameState';
+import type { GameAction } from './GameAction';
+import { IdUtils } from '../utils/GameUtils';
 
 /**
  * Engine for deriving current game state from initial state + action history
@@ -46,41 +46,18 @@ export class GameStateDerivation {
       updatedAt: action.timestamp
     };
 
-    switch (action.type) {
-      case 'join-game':
-        return GameStateDerivation.applyJoinGame(baseState, action);
-      
-      case 'start-game':
-        return GameStateDerivation.applyStartGame(baseState, action);
-      
-      case 'place-land':
-        return GameStateDerivation.applyPlaceLand(baseState, action);
-      
-      case 'place-citadel':
-        return GameStateDerivation.applyPlaceCitadel(baseState, action);
-      
-      case 'select-piece':
-        return GameStateDerivation.applySelectPiece(baseState, action);
-      
-      case 'place-piece':
-        return GameStateDerivation.applyPlacePiece(baseState, action);
-      
-      case 'move-piece':
-        return GameStateDerivation.applyMovePiece(baseState, action);
-      
-      case 'capture-piece':
-        return GameStateDerivation.applyCapturePiece(baseState, action);
-      
-      case 'end-turn':
-        return GameStateDerivation.applyEndTurn(baseState, action);
-      
-      case 'concede':
-        return GameStateDerivation.applyConcedeGame(baseState, action);
-      
-      // Add more action handlers as needed
-      default:
-        console.warn(`Unknown action type: ${(action as any).type}`);
+    // Use ActionRegistry for all action handling
+    const handler = require('./ActionRegistry').ActionRegistry.getHandler(action.type);
+    if (handler) {
+      try {
+        return handler(baseState, action);
+      } catch (err) {
+        console.error(`Error applying action '${action.type}':`, err);
         return baseState;
+      }
+    } else {
+      console.warn(`Unknown action type: ${(action as any).type}`);
+      return baseState;
     }
   }
 

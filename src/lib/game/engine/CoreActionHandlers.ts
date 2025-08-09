@@ -1,4 +1,4 @@
-import type { GameState, Player, Land, Piece, Citadel } from './GameState.js';
+import type { GameState, Player, Land, Piece, Citadel } from './GameState';
 import type { 
   BaseGameAction,
   JoinGameAction,
@@ -11,8 +11,8 @@ import type {
   CapturePieceAction,
   EndTurnAction,
   ConcedeAction
-} from './BaseActions.js';
-import { ActionRegistry, type ActionHandler } from './ActionRegistry.js';
+} from './BaseActions';
+import { ActionRegistry, type ActionHandler } from './ActionRegistry';
 
 /**
  * Core action handlers for basic game functionality

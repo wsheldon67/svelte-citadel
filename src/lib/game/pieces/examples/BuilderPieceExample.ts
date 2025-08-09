@@ -1,7 +1,7 @@
-import type { BaseGameAction } from '../../engine/BaseActions.js';
-import type { GameState } from '../../engine/GameState.js';
-import { ActionRegistry, defineAction } from '../../engine/ActionRegistry.js';
-import type { Coordinate } from '../../board/Coordinate.js';
+import type { BaseGameAction } from '../../engine/BaseActions';
+import type { GameState } from '../../engine/GameState';
+import { ActionRegistry, defineAction } from '../../engine/ActionRegistry';
+import type { Coordinate } from '../../board/Coordinate';
 
 /**
  * Example piece that demonstrates how to define custom actions

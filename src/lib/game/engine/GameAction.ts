@@ -1,5 +1,5 @@
-import type { Coordinate } from '../board/Coordinate.js';
-import type { PieceType } from './GameState.js';
+import type { Coordinate } from '../board/Coordinate';
+import type { PieceType } from './GameState';
 
 /**
  * Base interface for all game actions

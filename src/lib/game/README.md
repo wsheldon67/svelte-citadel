@@ -108,7 +108,7 @@ src/lib/game/
 
 ### Creating a New Game
 ```typescript
-import { GameFactory } from '$lib/game/engine/GameFactory.js';
+import { GameFactory } from '$lib/game/engine/GameFactory';
 
 const gameDoc = GameFactory.createGameDocument('player_host_123', {
   maxPlayers: 4,
@@ -118,7 +118,7 @@ const gameDoc = GameFactory.createGameDocument('player_host_123', {
 
 ### Adding Player Actions
 ```typescript
-import { ActionFactory } from '$lib/game/engine/GameFactory.js';
+import { ActionFactory } from '$lib/game/engine/GameFactory';
 
 const joinAction = ActionFactory.createJoinGameAction(
   'player_bob_456',
@@ -131,7 +131,7 @@ gameDoc.version++;
 
 ### Firestore Integration
 ```typescript
-import { SerializationUtils } from '$lib/game/engine/GameFactory.js';
+import { SerializationUtils } from '$lib/game/engine/GameFactory';
 
 // Save to Firestore
 const serialized = SerializationUtils.serializeGameDocument(gameDoc);

@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { GameFactory, ActionFactory } from '../engine/GameFactory.js';
-import { GameStateDerivation } from '../engine/GameStateDerivation.js';
-import { CoordinateUtils } from '../board/Coordinate.js';
-import { IdUtils, ValidationUtils } from '../utils/GameUtils.js';
+import { GameFactory, ActionFactory } from '../engine/GameFactory';
+import { GameStateDerivation } from '../engine/GameStateDerivation';
+import { CoordinateUtils } from '../board/Coordinate';
+import { IdUtils, ValidationUtils } from '../utils/GameUtils';
 
 describe('Game Data Structures', () => {
   describe('Coordinate System', () => {

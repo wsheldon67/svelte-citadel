@@ -1,4 +1,4 @@
-import type { Coordinate } from '../board/Coordinate.js';
+import type { Coordinate } from '../board/Coordinate';
 
 /**
  * Base interface that all game actions must implement
