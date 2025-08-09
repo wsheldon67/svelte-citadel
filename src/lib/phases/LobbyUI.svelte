@@ -24,8 +24,8 @@
 <p class='game_code'>Game Code: {game_code}</p>
 <h2>Players</h2>
 <ul>
-  {#each game.players as player}
-    <li>{player.data.name}</li>
+  {#each Object.values(game.data.players) as playerData}
+    <li>{playerData.name}</li>
   {/each}
 </ul>
 <button onclick={start_game}>Start Game</button>
